@@ -11,23 +11,164 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
-
 </head>
 <body>
+
     <nav class="navbar">
         <div class="logo">
-            <img src="../static/images/dark-logo.png" alt="logo">
+            <div class="img"></div>
             <p class="logo">Nutri Assist</p>
         </div>
         <ul class="nav-links">
-            <li><a href="#">Home</a></li>
+            <li><a href="/templates/index.html">Home</a></li>
             <li><a href="#">Support</a></li>
             <li><a href="#">My Account</a></li>
-            <li><a href="#"><i class="fa-solid fa-sun"></i></a></li>
+            <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            <a href="/templates/signUp.html" class="btn secondary-btn">Sign Up</a>
+            <a href="/templates/Login.html" class="btn primary-btn">Login</a>
         </ul>
     </nav>
 
+    <section class="hero">
+        <!-- Left Content -->
+        <div class="hero-content">
+            <h1>Your Personalized Meal Planning Dashboard Awaits</h1>
+            <p>Stay on top of your health with our intuitive dashboard. Track your daily calorie intake, monitor your meals, and access essential features with ease.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn primary-btn">Log Meal</a>
+                <a href="#" class="btn secondary-btn">Learn More</a>
+            </div>
+        </div>
 
+        <!-- Right Animated Image Grid -->
+        <div class="hero-images">
+            <div class="grid up">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+            <div class="grid down">
+                <div class="box"></div>
+                <div class="box"></div>
+                <div class="box"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="b">
+        <div class="divheading">
+            <h2>Discover Your Personalized Meal Planning Features for a Healthier Lifestyle</h2>
+        </div>
+        <div class="tags">
+            <div class="tagdiv">
+                <h3>
+                    Streamline Your Cooking with Our Easy-to-Use Meal Planning Tools
+                </h3>
+                <p>
+                    Access essential features that simplify your meal preparation and grocery shopping.
+                </p>
+                <p>
+                    <a href="">Explore<i class="fa-solid fa-chevron-right"></i></a> 
+                </p>
+            </div>
+            <div class="tagdiv">
+                <h3>
+                    Find Delicious Recipes Tailored to Your Taste and Dietary Needs
+                </h3>
+                <p>
+                    Browse a variety of recipes that fit your preferences and calorie goals.
+                </p>
+                <p>
+                    <a href="">View<i class="fa-solid fa-chevron-right"></i></a> 
+                </p>
+            </div>
+            <div class="tagdiv">
+                <h3>
+                    Manage Your Grocery List Efficiently with Our Smart Tools
+                </h3>
+                <p>
+                    Create and track your grocery list effortlessly based on your meal plans.
+                </p>
+                <p>
+                    <a href="">Shop<i class="fa-solid fa-chevron-right"></i> </a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="para">
+            <h2>
+                Track Your Weekly Progress: Calories, Meals, and More at a Glance
+            </h2>
+            <p>
+                Stay on top of your health goals with our weekly progress tracker. Easily monitor your calorie intake and meal count to make informed dietary choices.
+            </p>
+        </div>
+        <div class="image">
+            <img src="../static/images/vegiImage.png" alt="">
+        </div>
+    </section>
+    
+    <footer>
+        <div class="newsletter">
+            <div class="logo">
+                <div class="img"></div>
+                <p class="logo">Nutri Assist</p>
+            </div>
+            <p>
+                Subscribe to our newsletter for the latest updates on features and releases.
+            </p>
+            <form action="">
+                <input type="email" placeholder="Your email here" name="email" id="email">
+                <input class="secondary-btn" type="button" value="Join">
+            </form>
+            <p>
+                By subscribing, you consent to our Privacy Policy and agree to receive updates.
+            </p>
+        </div>
+        <div>
+            <h4>
+                Quick Links
+            </h4>
+            <ul>
+                <li><a href="">Home</a></li>
+                <li><a href="">Support</a></li>
+                <li><a href="">My Account</a></li>
+                <li><a href="">Dashboard</a></li>
+                <li><a href="">Create Account</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>
+                Connect With Us
+            </h4>
+            <ul>
+                <li><a href="">Newsletter</a></li>
+                <li><a href="">Community</a></li>
+                <li><a href="">Events</a></li>
+                <li><a href="">Careers</a></li>
+                <li><a href="">Partnerships</a></li>
+            </ul>
+        </div>
+        <div>
+            <h4>
+                Follow Us
+            </h4>
+            <ul>
+                <li><a href=""><i class="fa-brands fa-facebook"></i>Facebook</a></li>
+                <li><a href=""><i class="fa-brands fa-instagram"></i>Instagram</a></li>
+                <li><a href=""><i class="fa-brands fa-x-twitter"></i>X</a></li>
+                <li><a href=""><i class="fa-brands fa-linkedin"></i>LinkedIn</a></li>
+                <li><a href=""><i class="fa-brands fa-youtube"></i>YouTube</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <div class="copyRights">
+        <div class="divider"></div>
+        <p>© 2024 nadbcompany. All rights reserved.</p>
+    </div>
 
 
     <script src="../static/js/home.js"></script>
