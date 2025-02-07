@@ -17,15 +17,15 @@
     <nav class="navbar">
         <div class="logo">
             <div class="img"></div>
-            <p class="logo">Nutri Assist</p>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
         </div>
         <ul class="nav-links">
-            <li><a href="/templates/index.html">Home</a></li>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
             <li><a href="#">Support</a></li>
             <li><a href="#">My Account</a></li>
             <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
-            <a href="/templates/signUp.html" class="btn secondary-btn">Sign Up</a>
-            <a href="/templates/Login.html" class="btn primary-btn">Login</a>
+            <a href="{{ url_for('signup_page') }}" class="btn secondary-btn">Sign Up</a>
+            <a href="{{ url_for('login_page') }}" class="btn primary-btn">Login</a>
         </ul>
     </nav>
 
@@ -96,7 +96,7 @@
         </div>
     </section>
 
-    <section>
+    <section class="c">
         <div class="para">
             <h2>
                 Track Your Weekly Progress: Calories, Meals, and More at a Glance
@@ -114,15 +114,16 @@
         <div class="newsletter">
             <div class="logo">
                 <div class="img"></div>
-                <p class="logo">Nutri Assist</p>
+                <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
             </div>
             <p>
                 Subscribe to our newsletter for the latest updates on features and releases.
             </p>
-            <form action="">
-                <input type="email" placeholder="Your email here" name="email" id="email">
-                <input class="secondary-btn" type="button" value="Join">
+            <form id="newsletterForm" action="">
+                <input type="email" placeholder="Your email here" name="email" id="email" required>
+                <input class="secondary-btn" type="button" value="Join" onclick="subscribeNewsletter()">
             </form>
+            <p id="message"></p>
             <p>
                 By subscribing, you consent to our Privacy Policy and agree to receive updates.
             </p>
@@ -132,7 +133,7 @@
                 Quick Links
             </h4>
             <ul>
-                <li><a href="">Home</a></li>
+                <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="">Support</a></li>
                 <li><a href="">My Account</a></li>
                 <li><a href="">Dashboard</a></li>

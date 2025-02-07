@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="../static/css/signUp.css">
     <!-- font awesome link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <!-- google fonts link -->
@@ -22,18 +22,58 @@
     <nav class="navbar">
         <div class="logo">
             <div class="img"></div>
-            <p class="logo">Nutri Assist</p>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
         </div>
         <ul class="nav-links">
-            <li><a href="/templates/index.html">Home</a></li>
+            <li><a href="{{ url_for('home') }}">Home</a></li>
             <li><a href="#">Support</a></li>
             <li><a href="#">My Account</a></li>
             <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
-            <a href="/templates/signUp.html" class="btn secondary-btn">Sign Up</a>
-            <a href="/templates/Login.html" class="btn primary-btn">Login</a>
+            <a href="{{ url_for('signup_page') }}" class="btn secondary-btn">Sign Up</a>
+            <a href="{{ url_for('login_page') }}" class="btn primary-btn">Login</a>
         </ul>
     </nav>
 
+    <section class="imageSection">
+
+    </section>
+
+    <section class="formSection">
+        <p>Already have an account? <a href="../templates/Login.html">Log in</a></p>
+        <h2>Sign up</h2>
+        <p>Let’s make meal planning easy and stress-free!</p>
+
+        <form id="signupForm" action="">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" name="email" id="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" required>
+            <p>Use 8 or more characters with a mix of letters, numbers & symbols</p>
+
+            <label for="confirm_password">Re-enter the Password</label>
+            <input type="password" name="confirm_password" id="confirm_password" required>
+
+            <label for="terms">Agree to our Terms of use and Privacy Policy </label>
+            <input type="checkbox" name="terms" id="terms">
+
+            <label for="newsletter">Subscribe to our monthly newsletter</label>
+            <input type="checkbox" name="newsletter" id="newsletter">
+
+            <label for="otp">Enter OTP sent to your email</label>
+            <input type="text" name="otp" id="otp" maxlength="6" required placeholder="Enter OTP">
+
+            <input type="submit" value="Sign Up">
+            <p id="signMessage"></p>
+        </form>
+
+        <p>Already have an account? <a href="../templates/Login.html">Log in</a></p>
+    </section>
+
     <script src="../static/js/home.js"></script>
+    <script src="../static/js/signUp.js"></script>
 </body>
 </html>
