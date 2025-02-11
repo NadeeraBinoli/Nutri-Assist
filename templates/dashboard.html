@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../static/css/dashboard.css">
+        <!-- font awesome link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        <!-- google fonts link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <!-- Loading Screen -->
+    <!-- <div id="loading-screen">
+        <div class="spinner"></div>
+    </div> -->
+
+    <div class="sideNavBar">
+        <div class="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <a class="menu-item" id="menu-item-focused" href="/templates/dashboard.html"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="/templates/healthTracker.html"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="/templates/preference.html"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" href="/templates/grocery.html"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
+        <a class="menu-item" href="/templates/recipe.html"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
+        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <div class="logo">
+            <div class="img"></div>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
+        </div>
+    </div>
+
+    <section class="main-content">
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="#">My Account</a></li>
+                <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="mainContentDiv">
+
+            <h2>Let’s Plan Your Meal Here! </h2>
+
+            <!-- Meal Planning Section -->
+            <section class="meal-planning">
+                <div class="meal-header">
+                    <button id="day-btn">Day</button>
+                    <button class="active" id="week-btn">Week</button>
+                </div>
+                <div class="mealDay">
+                    <div class="date-info">
+                        <h3>Jan 20 Monday</h3>
+                        <p>Today <span class="dailyCalorie">1000 kcl </span> <i class="fa-solid fa-fire"></i></p>
+                    </div>
+                    <div class="meal-options">
+                        <!-- Meal Cards (Breakfast, Lunch, Dinner, Snack) -->
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Breakfast</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div>                                    
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Lunch</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Dinner</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Snack</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mealDay meal-options-hidden">
+                    <div class="date-info">
+                        <h3>Jan 21 Tuesday</h3>
+                        <p>Tomorrow <span class="dailyCalorie">1000 kcl </span> <i class="fa-solid fa-fire"></i></p>
+                    </div>
+                    <div class="meal-options">
+                        <!-- Meal Cards (Breakfast, Lunch, Dinner, Snack) -->
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Breakfast</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div>                                    
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Lunch</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Dinner</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                        <div class="meal-item">
+                            <div class="meal-item-head">
+                                <h4>Snack</h4>
+                                <i class="fa-solid fa-arrow-rotate-right"></i>
+                                <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                                <div class="dropdown-menu">
+                                    <ul>
+                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    </ul>
+                                </div> 
+                            </div>
+                            <div class="mealInfo">
+                                <img class="mealImage" src="../static/images/pancake.png" alt="Pancakes">
+                                <div class="mealDetail">
+                                    <h4 class="mealName">Pancakes</h4>
+                                    <p class="mealSize">1 Serving</p>
+                                </div>
+                            </div>
+                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="loadDiv">
+                <button class="loadButton"> Load More <i class="fa-solid fa-angle-down"></i></button>
+            </div>
+            
+            <!-- Grocery List Section -->
+            <section class="grocery-list">
+                <div class="grocery-content">
+                    <h2>Generate Grocery List Here!</h2>
+                    <p>Generate grocery lists with ease based on your meal plans or favorite recipes. Stay organized and ensure you have everything you need for healthy eating.</p>
+                    <div class="grocery-actions">
+                        <button class="generate-btn">Generate<i class="fa-solid fa-angle-down"></i></button>
+                    </div>
+                </div>
+                <div class="grocery-image">
+                    <img src="../static/images/grocery.png" alt="Grocery Basket">
+                </div>
+            </section>
+
+
+        </div>
+        
+    </section>
+
+    <!-- footer -->
+    <div class="copyRights">
+        <div class="divider"></div>
+        <p>© 2024 nadbcompany. All rights reserved.</p>
+    </div>
+    <script src="../static/js/darkmode.js"></script>
+    <script src="../static/js/dasboard.js"></script>
+</body>
+</html>

@@ -1,1 +1,200 @@
 @import url(home.css);
+
+.formSection{
+    display: flex;
+    gap: 2%;
+}
+
+.imageDiv{
+    width: 48%;
+    background: url(../images/signup.jpg);
+    background-position: bottom;
+    background-repeat: no-repeat;
+    background-size:cover;
+    height: 100vh;
+}
+
+.formDiv{
+    width: 48%;
+    padding: 2%;
+    max-width: 400px;
+}
+
+.formDiv p:nth-child(1){
+    text-align: right;
+}
+
+.formDiv h2{
+    font-size: 32px;
+}
+
+.form-container{
+    display: flex;
+    flex-direction: column;
+    padding-top: 2rem;
+}
+
+.form-container label {
+    margin-bottom: 5px;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"],
+.form-container input[type="submit"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--mantis-light-green);
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.form-container p {
+    font-size: 12px;
+    color: var(--dim-gray);
+    margin-bottom: 10px;
+}
+
+.form-container input[type="submit"],
+.form-group button {
+    background: var(--mantis-light-green);
+    color:var(--crusoe-dark-green);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    border: none;
+}
+
+.form-container input[type="submit"]:hover,
+.form-group button:hover {
+    background: var(--crusoe-dark-green);
+    color: var(--mantis-light-green);
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: var(--panache-white);
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--mantis-light-green); /* Light Green Border */
+    border-radius: 3px;
+    display: inline-block;
+    position: relative;
+    margin-right: 8px;
+    cursor: pointer;
+    background: transparent;
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+    background-color: var(--mantis-light-green);
+    border-color: var(--mantis-light-green);
+}
+
+.checkbox-group input[type="checkbox"]::before {
+    content: "✔";
+    font-size: 12px;
+    color: #161616;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.checkbox-group input[type="checkbox"]:checked::before {
+    display: block;
+}
+
+.checkbox-group a {
+    color: var(--mantis-light-green);
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0rem .2rem;
+}
+
+.checkbox-group a:hover {
+    text-decoration: underline;
+}
+
+#eyeIcon{
+    width: 1.5rem;
+}
+
+
+/* login */
+
+.line{
+    position: relative;
+    height:1px;
+    width: 100%;
+    margin:20px 0;
+    background-color: var(--dim-gray);
+}
+
+.line::before{
+    content: 'or';
+    color: var(--dim-gray);
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    background-color:var(--nero-black);
+    padding: 0 15px;
+}
+
+.media{
+    padding: 2rem 0;
+    width: 100%;
+}
+
+.media div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5rem;
+    width: 100%;
+    cursor: pointer;
+    margin: 1rem 0;
+    padding: 10px;
+    width: 100%;
+    background: var(--panache-white);
+    color:var(--crusoe-dark-green);
+    transition: 0.3s ease-in-out;
+    border: none;
+}
+
+.fb *,.fb{
+    background-color: var(--panache-white);
+    color: var(--nero-black);
+}
+
+.google, .google *{
+    background-color: var(--panache-white);
+    color: var(--nero-black);
+}
+.media a{
+    text-decoration: none;
+}
+.media div:hover{
+    transform: scale(1.05);
+    transition: transform 300ms;
+}
+
+.media i{
+    padding: 2px 5px 0;
+}

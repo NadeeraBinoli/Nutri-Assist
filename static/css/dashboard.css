@@ -1,0 +1,485 @@
+/* @import url(home.css); */
+
+:root {
+    --nero-black: #161616;
+    --crusoe-dark-green: #155e14;
+    --mantis-light-green: #88ca5e;
+    --panache-white: #e5f6df;
+    --dim-gray:#6A6969;
+    --dark-black:#111111;
+
+    --primary-font: "Signika", serif;
+    --secondary-font: "Roboto", serif;
+}
+
+*{
+    font-family: var(--secondary-font);
+    color: var(--panache-white);
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    background-color: var(--nero-black);
+}
+
+/* Sidebar */
+.sideNavBar {
+    height: 100vh;
+    background-color: var(--dark-black);
+    position: fixed;
+    display: flex;
+    gap: 3rem;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 20px 4rem ;
+}
+
+.hamburger{
+    width: 30px;
+    height: 30px;
+    background-color: var(--mantis-light-green);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    color: var(--crusoe-dark-green);
+    border-radius: 10px;
+}
+
+.hamburger i{
+    color: var(--crusoe-dark-green);
+    background-color: var(--mantis-light-green);
+    font-size: 20px;
+}
+
+.sideNavBar .menu-item{
+    color: var(--dim-gray);
+    font-size: 18px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sideNavBar .menu-item:hover,
+.sideNavBar .menu-item i:hover,
+#menu-item-focused,
+#menu-item-focused i {
+    color: var(--mantis-light-green);
+}
+
+.sideNavBar .menu-item i{
+    padding-right: 1rem;
+    color: var(--dim-gray);
+    font-size: 1.4rem;
+    width: 1.4rem;
+    cursor: pointer;
+}
+
+div.logo{
+    display: flex;
+    flex-direction: row;
+    font-weight: bold;
+}
+
+div.logo .img{
+    background-image: url(../images/dark-logo.png);
+    width: 50px;
+    aspect-ratio:  3 / 3;
+    background-size:contain;
+}
+
+a.logo{
+    display: flex;
+    align-items: center;
+    color: var(--mantis-light-green);
+    font-family: var(--primary-font);
+    font-size: 25px;
+    padding-left: 10px;
+    text-decoration: none;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 320px;
+    padding: 20px;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    /* justify-content: space-between; */
+    padding: 1rem 5rem;
+    gap: 5rem;
+    /* z-index: 1; */
+    right: 0;
+    position: absolute;
+}
+
+.nav-links {
+    list-style: none;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-links li {
+    text-align: left;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--panache-white);
+    padding: 8px 15px;
+    border-radius: 5px;
+}
+
+.nav-links li a:hover,.nav-links li a i:hover,footer a:hover,footer i:hover {
+    color: var(--mantis-light-green);
+}
+
+
+/* dark mode */
+
+#dark-mode-toggle {
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+.dark-mode {
+    --panache-white: #161616;
+    --nero-black: #e5f6df;
+    --mantis-light-green: #155e14;
+    --crusoe-dark-green: #88ca5e;
+    --dark-black:#CAEDBE;
+}
+
+/* Loading Screen Styles */
+#loading-screen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: var(--nero-black);
+    color: var(--panache-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+#loading-screen p{
+    font-family: var(--primary-font);
+    font-size: 24px;
+}
+
+.spinner {
+    width: 80px;
+    height: 40px;
+    border-radius: 0 0 100px 100px;
+    border: 5px solid #538a2d;
+    border-top: 0;
+    box-sizing: border-box;
+    background:
+    radial-gradient(farthest-side at top,#0000 calc(100% - 5px),#e7ef9d calc(100% - 4px)), 
+    radial-gradient(2px 3px,#5c4037 89%,#0000) 0 0/17px 12px,
+    #ff1643;
+    --c:radial-gradient(farthest-side,#000 94%,#0000);
+    -webkit-mask:
+    linear-gradient(#0000 0 0),
+    var(--c) 12px -8px,
+    var(--c) 29px -8px,
+    var(--c) 45px -6px,
+    var(--c) 22px -2px,
+    var(--c) 34px  6px, 
+    var(--c) 21px  6px,
+    linear-gradient(#000 0 0);
+    mask:
+    linear-gradient(#000 0 0),
+    var(--c) 12px -8px,
+    var(--c) 29px -8px,
+    var(--c) 45px -6px,
+    var(--c) 22px -2px,
+    var(--c) 34px  6px, 
+    var(--c) 21px  6px,
+    linear-gradient(#0000 0 0);
+    -webkit-mask-composite:destination-out;
+    mask-composite:exclude,add,add,add,add,add,add;
+    -webkit-mask-repeat: no-repeat;
+    animation: l8 2s infinite;
+}
+@keyframes l8 {
+    0%   {-webkit-mask-size: auto,0 0,0 0,0 0,0 0,0 0,0 0}
+    15%  {-webkit-mask-size: auto,20px 20px,0 0,0 0,0 0,0 0,0 0}
+    30%  {-webkit-mask-size: auto,20px 20px,20px 20px,0 0,0 0,0 0,0 0}
+    45%  {-webkit-mask-size: auto,20px 20px,20px 20px,20px 20px,0 0,0 0,0 0}
+    60%  {-webkit-mask-size: auto,20px 20px,20px 20px,20px 20px,20px 20px,0 0,0 0}
+    75%  {-webkit-mask-size: auto,20px 20px,20px 20px,20px 20px,20px 20px,20px 20px,0 0}
+    90%,
+    100% {-webkit-mask-size: auto,20px 20px,20px 20px,20px 20px,20px 20px,20px 20px,20px 20px}
+}
+
+
+.mainContentDiv{
+    padding-top: 3rem;
+}
+
+.mainContentDiv h2{
+    font-family: var(--primary-font);
+    font-size: 36px;
+}
+
+
+/* Meal Planning Section */
+.meal-planning {
+    margin-bottom: 40px;
+}
+.meal-header{
+    border-radius: 10px;
+    border: 1px solid var(--panache-white);
+    width: 8.71rem;
+    padding: 2px;
+    margin: 1rem 0;
+}
+
+.meal-header button {
+    background-color: var(--nero-black);
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+}
+.meal-header .active {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+}
+
+.date-info{
+    margin-top: 2rem;
+}
+
+.date-info h3{
+    font-size: 20px;
+    margin: 1rem 0 .5rem;
+    font-weight: 400;
+}
+.date-info p{
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.date-info p span{
+    font-size: 20px;
+    color: var(--mantis-light-green);
+}
+
+.date-info p i{
+    color: red;
+    margin-left: 1rem;
+    font-size: 20px;
+}
+
+.meal-options {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    border: 1px solid var(--panache-white);
+    border-radius: 10px;
+}
+.meal-item {
+    text-align: center;
+    /* background-color: #1E1E1E; */
+    padding: 20px;
+    width: 22%;
+    /* border-radius: 8px; */
+    border-width: 0 1px 0 0;
+    border-color: var(--panache-white);
+    border-style: solid;
+}
+
+.meal-options div:nth-child(4){
+    border: none;
+}
+.meal-item{
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+.meal-item button {
+    border: 1px solid var(--panache-white);
+    background-color: var(--nero-black);
+    padding: .5rem;
+    width: 10rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.meal-item button i{
+    font-size: 1rem;
+    border: 2px solid var(--panache-white);;
+    padding: 5px;
+    border-radius: 4rem;
+    margin-right: 1rem;
+}
+
+.mealInfo{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.meal-item-head{
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+/* Dropdown Menu */
+.options-btn {
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 2rem;
+    left: 12rem;
+    background-color: var(--dark-black);
+    border-radius: 8px;
+    width: 100%;
+}
+
+.dropdown-menu ul {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    list-style: none;
+    padding: 1rem 1.5rem;
+    margin: 0;
+    border-radius: 8px;
+    border: 2px solid var(--panache-white);
+}
+
+.dropdown-menu li {
+    margin: 10px 0;
+}
+
+.dropdown-menu a {
+    text-decoration: none;
+    font-size: 16px;
+}
+
+.dropdown-menu a i{
+    margin-right: .5rem;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a i:hover,
+.meal-item button:hover,
+.meal-item button i:hover,
+.options-btn:hover,
+.fa-arrow-rotate-right:hover,
+.loadButton:hover,
+.loadButton i:hover,
+.generate-btn i:hover,
+.generate-btn:hover  {
+    color: var(--mantis-light-green);
+    border-color: var(--mantis-light-green);
+}
+
+.fa-arrow-rotate-right{
+    cursor: pointer;
+}
+
+/* Show dropdown on button hover */
+.meal-item .options-btn:hover + .dropdown-menu {
+    display: block;
+}
+
+.loadButton,.generate-btn{
+    border: 1px solid var(--panache-white);
+    background-color: var(--nero-black);
+    padding: .5rem;
+    width: 10rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.loadButton i,.generate-btn i{
+    font-size: 1rem;
+    padding: 5px;
+    margin-right: 1rem;
+}
+
+.loadDiv{
+    display: flex;
+    justify-content: center;
+    margin: 2rem;
+}
+
+.meal-options-hidden{
+    display: none;
+}
+
+
+/* grocery */
+
+.grocery-list {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5rem 0;
+    border-radius: 8px;
+}
+
+.grocery-content {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.grocery-content p {
+    font-size: 16px;
+    line-height: 1.5rem;
+    margin-bottom: 20px;
+}
+.grocery-actions {
+    display: flex;
+    align-items: center;
+}
+
+.grocery-image img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+
+/* footer */
+
+.copyRights{
+    text-align: center;
+    font-size: 14px;
+    padding:0 0 4rem;
+}
+
+.divider {
+    height: 2px;
+    background-color: var(--dim-gray);
+    margin: 2rem 5%;
+    width: 100%;
+    display: flex;
+    align-content: center;
+}

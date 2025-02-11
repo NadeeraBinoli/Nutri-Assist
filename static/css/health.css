@@ -1,0 +1,355 @@
+@import url(dashboard.css);
+
+body{
+    overflow-x: hidden;
+}
+
+/* Health Form Styling */
+.health-form {
+    background-color: #1E1E1E;
+    padding: 30px;
+    border-radius: 10px;
+    color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.health-form h2 {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+select, input[type="range"], button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 8px;
+}
+
+button {
+    background-color: #76D3A0;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #66b08a;
+}
+
+/* Slider containers for height and weight */
+.slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Individual slider values */
+span {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+input[type="range"] {
+    width: 80%;
+}
+
+/* BMI Section */
+.bmi-section {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.bmi-section h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.bmi-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bmi-value {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+#bmi-status {
+    background-color: #76D3A0;
+    padding: 5px 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.bmi-slider-container {
+    width: 100%;
+}
+
+#bmi-slider {
+    width: 100%;
+    background: linear-gradient(to right, #f44336, #ff9800, #ffeb3b, #4caf50, #2196f3);
+    border-radius: 10px;
+    height: 8px;
+}
+
+
+/* Nutrition Targets Section */
+.nutrition-targets {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.nutrition-targets h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.nutrition-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.nutrition-macro p {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+#nutrition-calories {
+    background-color: #76D3A0;
+    padding: 10px;
+    font-size: 20px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+}
+
+#nutrition-carbs,
+#nutrition-fats,
+#nutrition-proteins {
+    background-color: #333;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+#nutrition-carbs {
+    background-color: #ff9800; /* Orange for carbs */
+}
+
+#nutrition-fats {
+    background-color: #f44336; /* Red for fats */
+}
+
+#nutrition-proteins {
+    background-color: #4caf50; /* Green for proteins */
+}
+
+
+/* Water Intake Section */
+.water-intake {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.water-intake h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.toggle-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.toggle-buttons button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    width: 48%;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.toggle-buttons .active {
+    background-color: #76D3A0; /* Green for active button */
+}
+
+.water-progress {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.water-progress p {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#progress {
+    height: 100%;
+    background-color: #76D3A0; /* Green indicating the progress */
+}
+
+.drink-log {
+    margin-top: 20px;
+}
+
+.log-entry {
+    display: flex;
+    justify-content: space-between;
+    background-color: #333;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+}
+
+.log-entry span {
+    font-size: 16px;
+}
+
+/* Calorie Intake Section */
+.calorie-intake {
+    background-color: #1e1e1e;
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.calorie-intake h3 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+
+.calorie-meter {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.calorie-meter p {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.meter {
+    width: 100%;
+    height: 15px;
+    background-color: #333;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+#calorie-progress {
+    height: 100%;
+    background-color: #f44336; /* Red indicating calorie progress */
+}
+
+.nutrition-breakdown {
+    margin-top: 20px;
+}
+
+.macro {
+    margin-bottom: 15px;
+}
+
+.macro p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.progress-bar {
+    background-color: #333;
+    width: 100%;
+    height: 8px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+#protein-progress {
+    background-color: #4caf50; /* Green for protein */
+}
+
+#fats-progress {
+    background-color: #ff9800; /* Orange for fats */
+}
+
+#carbs-progress {
+    background-color: #2196f3; /* Blue for carbs */
+}
+
+/* man-section */
+
+.man-section{
+    background-image: url(/static/images/man.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size:contain;
+    height: 1fr;
+    width: 300px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3 ,1fr);  /* Auto-resize columns */
+    grid-gap: 3rem;
+    padding: 20px;
+}
+
+.grid-item {
+    /* background-color: #1E1E1E; */
+    /* padding: 20px; */
+    border-radius: 10px;
+    border: 2px solid var(--panache-white);
+    color: white;
+}
+
+.grid-item:nth-child(1){
+    grid-row: span 2;
+}
+
+.grid-item:nth-child(3){
+    /* height: 30%; */
+    grid-row: span 2;
+    border: none;
+    /* grid-column: span 1; */
+}

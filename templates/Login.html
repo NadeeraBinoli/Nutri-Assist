@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../static/css/home.css">
+    <link rel="stylesheet" href="../static/css/signUp.css">
     <!-- font awesome link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <!-- google fonts link -->
@@ -13,28 +13,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <p><br>Loading...</p>
-    </div>
-    
-    <nav class="navbar">
-        <div class="logo">
-            <div class="img"></div>
-            <p class="logo">Nutri Assist</p>
-        </div>
-        <ul class="nav-links">
-            <li><a href="/templates/index.html">Home</a></li>
-            <li><a href="#">Support</a></li>
-            <li><a href="#">My Account</a></li>
-            <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
-            <a href="/templates/signUp.html" class="btn secondary-btn">Sign Up</a>
-            <a href="/templates/Login.html" class="btn primary-btn">Login</a>
-        </ul>
-    </nav>
 
-    <script src="../static/js/home.js"></script>     
-    <script src="../static/js/login.js"></script>    
+    <section class="formSection">
+        <div class="imageDiv"></div>
+        <div class="formDiv">
+            <p>Don't you have an account? <a href="../templates/signUp.html">Sign up</a></p>
+            <h2>Sign in</h2>
+            <p>Welcome back! Ready to plan, cook, and stay on track?</p>
+            <div class="media">
+                <div class="fb" href="">
+                    <a href=""><i class="fa-brands fa-facebook"></i>Login with Facebook</a>
+                </div>
+                <div class="google" href="">
+                    <a href=""><i class="fa-brands fa-google"></i>Login with Google</a>
+                </div>
+            </div>
+            <div class="line"></div>
+            <form id="loginForm" class="form-container" action="">
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" required>
+            
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password" required>
+                
+                <!-- Links to switch between forms -->
+                
+                <a href="javascript:void(0);" id="forgotPasswordLink">Forgot Password?</a>
+
+            
+                <input class="primary-btn" type="submit" value="Login">
+                <p id="loginMessage"></p>
+            </form>
+            <!-- forgot-password.html -->
+            <form id="forgotPasswordForm" style="display: none;" class="form-container" action="">
+                <h2>Forgot Password</h2>
+                <p>Enter your email address and we'll send you a link to reset your password.</p>
+    
+                <label for="email">Email Address</label>
+                <input type="email" name="email" id="email" required>
+    
+                <input class="primary-btn" type="submit" value="Send Reset Link">
+                <p id="forgotPasswordMessage"></p>
+    
+                <a href="/login" class="back-link">Back to Login</a>
+            </form>
+
+            <p>Don't you have an account? <a href="../templates/signUp.html">Sign up</a></p>
+        </div>
+    </section>
+    <script src="../static/js/login.js"></script>
 </body>
 </html>

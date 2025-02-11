@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../static/css/health.css">
+        <!-- font awesome link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        <!-- google fonts link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <!-- Loading Screen -->
+    <!-- <div id="loading-screen">
+        <div class="spinner"></div>
+    </div> -->
+
+    <div class="sideNavBar">
+        <div class="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <a class="menu-item" id="menu-item-focused" href="/templates/dashboard.html"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="/templates/healthTracker.html"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="/templates/preference.html"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" href="/templates/grocery.html"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
+        <a class="menu-item" href="/templates/recipe.html"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
+        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <div class="logo">
+            <div class="img"></div>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
+        </div>
+    </div>
+
+<section class="main-content">
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="#">My Account</a></li>
+                <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="mainContentDiv">
+
+            <h2>Let's Track Our Calories</h2>
+        </div>
+
+
+    <section class="grid-container">
+            <!-- calculator -->
+
+        <section class="grid-item health-form">
+            <!-- Gender Dropdown -->
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+        
+            <!-- Age Slider -->
+            <div class="form-group">
+                <label for="age">Age</label>
+                <div class="slider-container">
+                    <input type="range" id="age" name="age" min="18" max="100" value="25">
+                    <span id="age-value">25</span>
+                </div>
+            </div>
+        
+            <!-- Height Slider -->
+            <div class="form-group">
+                <label for="height">Height</label>
+                <div class="slider-container">
+                    <input type="range" id="height-feet" name="height-feet" min="4" max="7" value="5">
+                    <span id="height-feet-value">5'</span>
+                    <input type="range" id="height-inch" name="height-inch" min="0" max="12" value="11">
+                    <span id="height-inch-value">11"</span>
+                </div>
+            </div>
+        
+            <!-- Weight Slider -->
+            <div class="form-group">
+                <label for="weight">Weight</label>
+                <div class="slider-container">
+                    <input type="range" id="weight" name="weight" min="50" max="250" value="85.56">
+                    <span id="weight-value">85.56</span>
+                </div>
+            </div>
+        
+            <!-- Activity Dropdown -->
+            <div class="form-group">
+                <label for="activity">Activity Level</label>
+                <select id="activity" name="activity">
+                    <option value="sedentary">Sedentary</option>
+                    <option value="light">Light</option>
+                    <option value="moderate" selected>Moderate</option>
+                    <option value="active">Active</option>
+                </select>
+            </div>
+        
+            <!-- Calculate Button -->
+            <div class="form-group">
+                <button id="calculate-btn">Calculate</button>
+            </div>
+        </section>
+        
+        <!-- BMI Display Section -->
+        <section class="grid-item bmi-section">
+            <h3>Body Mass Index (BMI)</h3>
+            <div class="bmi-container">
+                <div class="bmi-value">
+                    <span id="bmi-result">24.9</span>
+                    <span id="bmi-status">You're Healthy</span>
+                </div>
+                <div class="bmi-slider-container">
+                    <input type="range" id="bmi-slider" min="15" max="40" step="0.1" value="24.9">
+                </div>
+            </div>
+        </section>
+
+        <!-- man -->
+        <section class="grid-item man-section">
+
+        </section>
+
+        <!-- Display nutrition targets -->
+        <section class="grid-item nutrition-targets">
+            <h3>My Nutrition Targets</h3>
+            <div class="nutrition-info">
+                <p id="nutrition-calories">982 Calories</p>
+                <div class="nutrition-macro">
+                    <p id="nutrition-carbs">40g Carbs</p>
+                    <p id="nutrition-fats">88g Fats</p>
+                    <p id="nutrition-proteins">74g Proteins</p>
+                </div>
+            </div>
+        </section>
+
+
+        
+        <!-- Water intake -->
+
+        <section class="grid-item water-intake">
+            <h3>Water Intake Report</h3>
+            
+            <!-- Day/Week Toggle -->
+            <div class="toggle-buttons">
+                <button class="active" id="day-btn">Day</button>
+                <button id="week-btn">Week</button>
+            </div>
+        
+            <!-- Water Intake Progress -->
+            <div class="water-progress">
+                <p>1.9 / 2.5L</p>
+                <div class="progress-bar">
+                    <div id="progress" style="width: 76%"></div>
+                </div>
+            </div>
+        
+            <!-- Drink Log -->
+            <div class="drink-log">
+                <div class="log-entry">
+                    <span>500 ml</span>
+                    <span>7:00 am</span>
+                </div>
+                <div class="log-entry">
+                    <span>500 ml</span>
+                    <span>8:00 am</span>
+                </div>
+                <div class="log-entry">
+                    <span>500 ml</span>
+                    <span>9:00 am</span>
+                </div>
+                <div class="log-entry">
+                    <span>500 ml</span>
+                    <span>11:00 am</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- calorie intake -->
+
+        <section class=" grid-item calorie-intake">
+            <h3>Calorie Intake Report</h3>
+            
+            <!-- Day/Week Toggle -->
+            <div class="toggle-buttons">
+                <button class="active" id="day-btn">Day</button>
+                <button id="week-btn">Week</button>
+            </div>
+        
+            <!-- Calorie Meter -->
+            <div class="calorie-meter">
+                <p>1721 Kcal of 2213 kcal</p>
+                <div class="meter">
+                    <div id="calorie-progress" style="width: 78%"></div>
+                </div>
+            </div>
+        
+            <!-- Nutritional Breakdown -->
+            <div class="nutrition-breakdown">
+                <div class="macro">
+                    <p>Protein</p>
+                    <div class="progress-bar">
+                        <div id="protein-progress" style="width: 75%"></div>
+                    </div>
+                </div>
+                <div class="macro">
+                    <p>Fats</p>
+                    <div class="progress-bar">
+                        <div id="fats-progress" style="width: 80%"></div>
+                    </div>
+                </div>
+                <div class="macro">
+                    <p>Carbs</p>
+                    <div class="progress-bar">
+                        <div id="carbs-progress" style="width: 87%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+        
+        
+
+</section>
+
+        <!-- footer -->
+    <div class="copyRights">
+        <div class="divider"></div>
+        <p>© 2024 nadbcompany. All rights reserved.</p>
+    </div>
+    <script src="../static/js/darkmode.js"></script>
+    <script src="../static/js/dasboard.js"></script>
+    <script src="../static/js/health.js"></script>
+</body>
+</html>
