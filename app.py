@@ -4,6 +4,7 @@ from flask_mail import Mail, Message
 import re  # Regular expression for email validation
 from auth import auth  # Import the new auth module 
 #import os   For environment variables
+from dashboard import dashboard_bp  # Import the Blueprint
 
 
 app = Flask(__name__) # Creates a Flask web application instance.
@@ -31,6 +32,7 @@ cursor = db.cursor() # Creates a cursor object to execute SQL queries
 
 # Register Blueprint
 app.register_blueprint(auth)
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  # All routes in dashboard.py will start with /dashboard
 
 # Define Routes
 
@@ -55,6 +57,26 @@ def forgot_password():
     email = request.json.get("email")
     # Logic to handle the email and send a reset link
     return jsonify({"message": "Password reset link has been sent to your email."})
+
+@app.route('/preference')
+def preference():
+    return render_template('preference.html')
+
+@app.route('/healthTracker')
+def healthTracker():
+    return render_template('healthTracker.html')
+
+@app.route('/grocery')
+def grocery():
+    return render_template('grocery.html')
+
+@app.route('/recipe')
+def recipe():
+    return render_template('recipe.html')
+
+@app.route('/account')
+def account():
+    return render_template('account.html')
 
 @app.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):

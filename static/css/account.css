@@ -1,0 +1,83 @@
+@import url(dashboard.css);
+
+.my-account {
+    background-color: #1e1e1e;
+    padding: 20px;
+    color: white;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.profile-pic {
+    margin-right: 20px;
+}
+
+.profile-pic img {
+    /* width: 100px; */
+    /* height: 100px; */
+    /* border-radius: 50%; */
+}
+
+.user-details h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.user-details p {
+    font-size: 16px;
+}
+
+.change-btn {
+    background-color: #76D3A0;
+    color: black;
+    padding: 5px 10px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #76D3A0;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.danger-zone {
+    background-color: #333;
+    padding: 20px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.danger-zone h3 {
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.danger-btn {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.danger-btn:hover {
+    background-color: #e53935;
+}
+
+span {
+    font-size: 14px;
+    color: #ccc;
+}

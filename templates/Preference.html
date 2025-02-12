@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../static/css/preference.css">
+        <!-- font awesome link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        <!-- google fonts link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <!-- Loading Screen -->
+    <!-- <div id="loading-screen">
+        <div class="spinner"></div>
+    </div> -->
+
+    <div class="sideNavBar">
+        <div class="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <a class="menu-item" id="menu-item-focused" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
+        <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
+        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <div class="logo">
+            <div class="img"></div>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
+        </div>
+    </div>
+
+<section class="main-content">
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="{{ url_for('account') }}">My Account</a></li>
+                <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="mainContentDiv">
+
+            <h2>Let's Track Our Calories</h2>
+        </div>
+        
+        <!-- Primary Diet Section  -->
+        <section class="primary-diet">
+            <h3>Primary Diet</h3>
+            <p>Choose the diet plan you want to follow</p>
+            <div class="diet-options">
+                <button class="diet-btn" data-diet="Anything">Anything</button>
+                <button class="diet-btn" data-diet="Paleo">Paleo</button>
+                <button class="diet-btn" data-diet="Ketogenic">Ketogenic</button>
+                <button class="diet-btn" data-diet="Vegetarian">Vegetarian</button>
+                <button class="diet-btn" data-diet="Low-carb Diet">Low-carb Diet</button>
+            </div>
+            <button id="load-more" class="load-more-btn">Load More</button>
+        </section>
+
+        <!-- Food Types Section -->
+        <section class="food-types">
+            <h3>Food Types</h3>
+            <p>Choose the food types you prefer by cultural preferences</p>
+            <div class="food-options">
+                <button class="food-btn" data-food="Anything">Anything</button>
+                <button class="food-btn" data-food="Sri Lankan">Sri Lankan</button>
+                <button class="food-btn" data-food="Indian">Indian</button>
+                <button class="food-btn" data-food="Chinese">Chinese</button>
+                <button class="food-btn" data-food="Arabic">Arabic</button>
+            </div>
+            <button id="load-more" class="load-more-btn">Load More</button>
+        </section>
+        
+        <!-- Exclusions Section  -->
+        <section class="exclusions">
+            <h3>Exclusions</h3>
+            <p>Select the foods that you want to avoid in your foods. Foods that you want to avoid marked in red color.</p>
+            <div class="exclusion-options">
+                <button class="exclusion-btn" data-allergy="Gluten">Gluten</button>
+                <button class="exclusion-btn" data-allergy="Peanut">Peanut</button>
+                <button class="exclusion-btn" data-allergy="Eggs">Eggs</button>
+                <button class="exclusion-btn" data-allergy="Fish">Fish</button>
+                <button class="exclusion-btn" data-allergy="Tree Nuts">Tree Nuts</button>
+            </div>
+            <button id="load-more" class="load-more-btn">Load More</button>
+        </section>
+        
+        <!-- Medical Concerns Section  -->
+        <section class="medical-concerns">
+            <h3>Medical Concerns</h3>
+            <p>Select the medical concerns that you have. Call your family doctor to get to know if you have those.</p>
+            <div class="medical-options">
+                <button class="medical-btn" data-condition="Cholesterol">Cholesterol</button>
+                <button class="medical-btn" data-condition="Diabetes">Diabetes</button>
+                <button class="medical-btn" data-condition="Hypotension">Hypotension</button>
+                <button class="medical-btn" data-condition="Hypertension">Hypertension</button>
+                <button class="medical-btn" data-condition="Malnutrition">Malnutrition</button>
+            </div>
+            <button id="load-more" class="load-more-btn">Load More</button>
+        </section>
+        
+        <!-- Meal Layout Section  -->
+        <section class="meal-layout">
+            <h3>Meal Layout</h3>
+            <p>Arrange your meal layout and get notification on each meal.</p>
+            <div class="meal-variety">
+                <button class="meal-btn" data-meal="Breakfast">Breakfast</button>
+                <button class="meal-btn" data-meal="Lunch">Lunch</button>
+                <button class="meal-btn" data-meal="Brunch">Brunch</button>
+                <button class="meal-btn" data-meal="Dinner">Dinner</button>
+                <button class="meal-btn" data-meal="Snack">Snack</button>
+                <button id="add-more" class="add-more-btn">+ Add More</button>
+            </div>
+        </section>
+
+        <!-- Button Group  -->
+        <section class="button-group">
+            <button id="save-changes" class="action-btn">Save All Changes</button>
+            <button id="reset-all" class="action-btn">Reset All</button>
+            <button id="clear-all" class="action-btn">Clear All Changes</button>
+        </section>
+        
+        <!-- Message Container -->
+        <div id="message-container" class="message-container">
+        <!-- The message will be inserted here dynamically -->
+        </div>
+
+        
+
+</section>
+
+        <!-- footer -->
+    <div class="copyRights">
+        <div class="divider"></div>
+        <p>© 2024 nadbcompany. All rights reserved.</p>
+    </div>
+    <script src="../static/js/darkmode.js"></script>
+    <script src="../static/js/preference.js"></script>
+</body>
+</html>
