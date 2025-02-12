@@ -313,7 +313,7 @@ a.logo{
 }
 
 
-.meal-item button {
+.add-more-btn {
     border: 1px solid var(--panache-white);
     background-color: var(--nero-black);
     padding: .5rem;
@@ -321,7 +321,7 @@ a.logo{
     border-radius: 10px;
     cursor: pointer;
 }
-.meal-item button i{
+.add-more-btn i{
     font-size: 1rem;
     border: 2px solid var(--panache-white);;
     padding: 5px;
@@ -385,8 +385,8 @@ a.logo{
 
 .dropdown-menu a:hover,
 .dropdown-menu a i:hover,
-.meal-item button:hover,
-.meal-item button i:hover,
+.add-more-btn:hover,
+.add-more-btn i:hover,
 .options-btn:hover,
 .fa-arrow-rotate-right:hover,
 .loadButton:hover,

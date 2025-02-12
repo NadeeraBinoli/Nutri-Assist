@@ -14,20 +14,20 @@
     </head>
 <body>
     <!-- Loading Screen -->
-    <!-- <div id="loading-screen">
+    <div id="loading-screen">
         <div class="spinner"></div>
-    </div> -->
+    </div>
 
     <div class="sideNavBar">
         <div class="hamburger">
             <i class="fa-solid fa-bars"></i>
         </div>
-        <a class="menu-item" id="menu-item-focused" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
         <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
-        <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" id="menu-item-focused" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
         <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
         <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
-        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
         <div class="logo">
             <div class="img"></div>
             <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
@@ -46,7 +46,8 @@
 
         <div class="mainContentDiv">
 
-            <h2>Let's Track Our Calories</h2>
+            <h2>Let’s Customize Your Diet</h2>
+            <h1>Welcome, {{ user_name }}!</h1>
         </div>
         
         <!-- Primary Diet Section  -->
@@ -59,8 +60,8 @@
                 <button class="diet-btn" data-diet="Ketogenic">Ketogenic</button>
                 <button class="diet-btn" data-diet="Vegetarian">Vegetarian</button>
                 <button class="diet-btn" data-diet="Low-carb Diet">Low-carb Diet</button>
+                <button class="loadButton"> Load More <i class="fa-solid fa-angle-down"></i></button>
             </div>
-            <button id="load-more" class="load-more-btn">Load More</button>
         </section>
 
         <!-- Food Types Section -->
@@ -73,8 +74,8 @@
                 <button class="food-btn" data-food="Indian">Indian</button>
                 <button class="food-btn" data-food="Chinese">Chinese</button>
                 <button class="food-btn" data-food="Arabic">Arabic</button>
+                <button class="loadButton"> Load More <i class="fa-solid fa-angle-down"></i></button>
             </div>
-            <button id="load-more" class="load-more-btn">Load More</button>
         </section>
         
         <!-- Exclusions Section  -->
@@ -87,8 +88,8 @@
                 <button class="exclusion-btn" data-allergy="Eggs">Eggs</button>
                 <button class="exclusion-btn" data-allergy="Fish">Fish</button>
                 <button class="exclusion-btn" data-allergy="Tree Nuts">Tree Nuts</button>
+                <button class="loadButton"> Load More <i class="fa-solid fa-angle-down"></i></button>
             </div>
-            <button id="load-more" class="load-more-btn">Load More</button>
         </section>
         
         <!-- Medical Concerns Section  -->
@@ -101,8 +102,8 @@
                 <button class="medical-btn" data-condition="Hypotension">Hypotension</button>
                 <button class="medical-btn" data-condition="Hypertension">Hypertension</button>
                 <button class="medical-btn" data-condition="Malnutrition">Malnutrition</button>
+                <button class="loadButton"> Load More <i class="fa-solid fa-angle-down"></i></button>
             </div>
-            <button id="load-more" class="load-more-btn">Load More</button>
         </section>
         
         <!-- Meal Layout Section  -->
@@ -110,12 +111,12 @@
             <h3>Meal Layout</h3>
             <p>Arrange your meal layout and get notification on each meal.</p>
             <div class="meal-variety">
-                <button class="meal-btn" data-meal="Breakfast">Breakfast</button>
-                <button class="meal-btn" data-meal="Lunch">Lunch</button>
-                <button class="meal-btn" data-meal="Brunch">Brunch</button>
-                <button class="meal-btn" data-meal="Dinner">Dinner</button>
-                <button class="meal-btn" data-meal="Snack">Snack</button>
-                <button id="add-more" class="add-more-btn">+ Add More</button>
+                <button class="meal-btn" data-meal="Breakfast">Breakfast <i class="fa-solid fa-minus"></i></button>
+                <button class="meal-btn" data-meal="Lunch">Lunch <i class="fa-solid fa-minus"></i></button>
+                <button class="meal-btn" data-meal="Brunch">Brunch <i class="fa-solid fa-minus"></i></button>
+                <button class="meal-btn" data-meal="Dinner">Dinner <i class="fa-solid fa-minus"></i></button>
+                <button class="meal-btn" data-meal="Snack">Snack <i class="fa-solid fa-minus"></i></button>
+                <button id="add-more" class="add-more-btn">Add More <i class="fa-solid fa-plus"></i></button>
             </div>
         </section>
 

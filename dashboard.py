@@ -1,4 +1,20 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, session
+import mysql.connector
+
+# Create a Blueprint for the dashboard-related routes
+dashboard_bp = Blueprint('dashboard', __name__)
+
+# Connect to MySQL database
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="1234",
+    database="mealPlanner"
+)
+cursor = db.cursor()
+
+# Route for saving user preferences
+from flask import Blueprint, request, jsonify, session
 import mysql.connector
 
 # Create a Blueprint for the dashboard-related routes
@@ -16,11 +32,31 @@ cursor = db.cursor()
 # Route for saving user preferences
 @dashboard_bp.route('/save_user_preferences', methods=['POST'])
 def save_user_preferences():
-    data = request.json
-    user_id = 4  # Replace with the logged-in user's ID (or retrieve dynamically)
+    # Check if the user is logged in by verifying session
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'})
 
-    # Update the Preference table with user selections
-    query = """
+    # Get the user_id from the session
+    user_id = session["user_id"]
+
+    # Get the user preferences from the request
+    data = request.json
+
+    # Check if user already has a row in Preference table
+    cursor.execute("SELECT COUNT(*) FROM Preference WHERE userID = %s", (user_id,))
+    result = cursor.fetchone()
+
+    if result[0] == 0:
+        # If no record exists, insert an empty row for the user
+        insert_query = """
+            INSERT INTO Preference (userID, dietPlan, foodTypes, allergies, medicalConditions, mealFrequency)
+            VALUES (%s, '', '', '', '', '')
+        """
+        cursor.execute(insert_query, (user_id,))
+        db.commit()
+
+    # Now update the record with actual user preferences
+    update_query = """
         UPDATE Preference 
         SET dietPlan = %s, foodTypes = %s, allergies = %s, 
             medicalConditions = %s, mealFrequency = %s
@@ -28,15 +64,41 @@ def save_user_preferences():
     """
     values = (data['dietPlan'], data['foodTypes'], data['allergies'], 
               data['medicalConditions'], data['mealFrequency'], user_id)
-    
-    # Execute query
-    cursor.execute(query, values)
+
+    cursor.execute(update_query, values)
     db.commit()
 
     # Return success message
     return jsonify({'status': 'success', 'message': 'Preferences saved successfully!'})
 
 
+
+@dashboard_bp.route('/get_user_preferences', methods=['GET'])
+def get_user_preferences():
+    """ Fetches the user's saved preferences """
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'})
+
+    user_id = session["user_id"]
+
+    query = """
+        SELECT dietPlan, foodTypes, allergies, medicalConditions, mealFrequency 
+        FROM Preference WHERE userID = %s
+    """
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchone()
+
+    if result:
+        return jsonify({
+            'status': 'success',
+            'dietPlan': result[0],
+            'foodTypes': result[1].split(', '),
+            'allergies': result[2].split(', '),
+            'medicalConditions': result[3].split(', '),
+            'mealFrequency': result[4].split(', ')
+        })
+    else:
+        return jsonify({'status': 'error', 'message': 'No preferences found'})
 
 # updating with the old one 
 

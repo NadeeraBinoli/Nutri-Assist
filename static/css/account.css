@@ -1,25 +1,39 @@
 @import url(dashboard.css);
+body{
+    overflow-x: hidden;
+}
+input{
+    color: black;
+}
+
+#message-box{
+    color: red; 
+    font-weight: bold; 
+    margin: 2rem 0; 
+}
+
+#message-box button{
+    margin-right: 1rem;
+}
 
 .my-account {
-    background-color: #1e1e1e;
     padding: 20px;
-    color: white;
 }
 
 .user-info {
     display: flex;
     align-items: center;
     margin-bottom: 40px;
+    margin-left: 1rem;
+    margin-top: 2rem;
 }
 
 .profile-pic {
     margin-right: 20px;
 }
 
-.profile-pic img {
-    /* width: 100px; */
-    /* height: 100px; */
-    /* border-radius: 50%; */
+.user-details{
+    margin-left: 2rem;
 }
 
 .user-details h2 {
@@ -32,8 +46,8 @@
 }
 
 .change-btn {
-    background-color: #76D3A0;
-    color: black;
+    background-color: var(--mantis-light-green);
+    color: var(--nero-black);
     padding: 5px 10px;
     margin-left: 10px;
     border: none;
@@ -42,8 +56,8 @@
 }
 
 .edit-btn {
-    background-color: #76D3A0;
-    color: black;
+    background-color: var(--mantis-light-green);
+    color: var(--nero-black);
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
@@ -52,7 +66,6 @@
 }
 
 .danger-zone {
-    background-color: #333;
     padding: 20px;
     border-radius: 8px;
     margin-top: 20px;
@@ -63,11 +76,15 @@
     margin-bottom: 20px;
 }
 
+.danger-zone span{
+    margin-left: 1rem;
+}
+
 .danger-btn {
     background-color: #f44336;
     color: white;
     padding: 10px 20px;
-    margin-top: 10px;
+    margin-top: 2rem;
     border: none;
     border-radius: 8px;
     cursor: pointer;
@@ -79,5 +96,5 @@
 
 span {
     font-size: 14px;
-    color: #ccc;
+    color: var(--dim-gray);
 }

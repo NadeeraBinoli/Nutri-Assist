@@ -14,20 +14,20 @@
     </head>
 <body>
     <!-- Loading Screen -->
-    <!-- <div id="loading-screen">
+    <div id="loading-screen">
         <div class="spinner"></div>
-    </div> -->
+    </div>
 
     <div class="sideNavBar">
         <div class="hamburger">
             <i class="fa-solid fa-bars"></i>
         </div>
-        <a class="menu-item" id="menu-item-focused" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
         <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
         <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
         <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
         <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
-        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
         <div class="logo">
             <div class="img"></div>
             <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
@@ -39,12 +39,12 @@
             <ul class="nav-links">
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="#">Support</a></li>
-                <li><a href="{{ url_for('account') }}">My Account</a></li>
+                <li><a href="{{ url_for('account') }}" id="menu-item-focused">My Account</a></li>
                 <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
             </ul>
         </nav>
 
-        <div class="mainContentDiv"><h2>Let’s Plan Your Meal Here! </h2></div>
+        <div class="mainContentDiv"><h2>My Account</h2></div>
 
         <section class="my-account">
             <div class="user-info">
@@ -52,21 +52,58 @@
                     <img src="../static/images/profile.png" alt="Profile Picture">
                 </div>
                 <div class="user-details">
-                    <h2>Nadeera Binoli</h2>
-                    <p>Email Address: <span id="email">nadeerabinoli@gmail.com</span> <button id="change-email" class="change-btn">Change</button></p>
+                    <h2 style="margin: 0 0 1rem;">{{ user_name }}</h2>
+                    <p>Email Address: <span id="email">{{ user_email }}</span> <button id="change-email" class="change-btn">Change</button></p>
+                    <p style="color: #db1313; font-size:14px; margin: .5rem 0;">Log out and log again with the entered new email!</p>
                     <p>Password: <span id="password">**********</span> <button id="change-password" class="change-btn">Change</button></p>
                     <button id="edit-details" class="edit-btn">Edit Your Details</button>
                 </div>
+            </div>
+
+            <div class="emailChangeForm">
+                <h2>Change Email</h2>
+                <form class="form-container" action="">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" required>
+                    <input class="change-btn" type="submit" value="Update">
+                    <p id="emailChangeMessage"></p>
+                </form>
+            </div>
+
+
+            <div class="passwordChangeForm">
+                <h2>Change Password</h2>
+                <form id="changePasswordForm" class="form-container">
+                    <label for="currentPassword">Current Password</label>
+                    <input type="password" name="currentPassword" id="currentPassword" required>
+            
+                    <label for="newPassword">New Password</label>
+                    <input type="password" name="newPassword" id="newPassword" required>
+                    <p>Use 8 or more characters with a mix of letters, numbers & symbols</p>
+            
+                    <label for="confirmPassword">Re-enter the New Password</label>
+                    <input type="password" name="confirmPassword" id="confirmPassword" required>
+            
+                    <input class="change-btn" type="submit" value="Update">
+                    <p id="passwordChangeMessage"></p>
+                </form>
             </div>
         
             <div class="danger-zone">
                 <h3>Danger Zone</h3>
                 <p>
-                    <button id="delete-account" class="danger-btn">Delete Your Account</button><br>
+                    <button id="delete-account" class="danger-btn">Delete Your Account</button>
                     <span>Click here to permanently delete your account. This action cannot be undone.</span>
                 </p>
+
+                <div id="message-box" style="display: none;">
+                    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                    <button id="confirm-delete" class="danger-btn">Yes, Delete</button>
+                    <button id="cancel-delete" class="danger-btn">Cancel</button>
+                </div>
+
                 <p>
-                    <button id="reset-account" class="danger-btn">Reset Your Account</button><br>
+                    <button id="reset-account" class="danger-btn">Reset Your Account</button>
                     <span>Click here to permanently clear your data. This will not delete your account. This action cannot be undone.</span>
                 </p>
             </div>

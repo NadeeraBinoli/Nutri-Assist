@@ -14,9 +14,9 @@
     </head>
 <body>
     <!-- Loading Screen -->
-    <!-- <div id="loading-screen">
+    <div id="loading-screen">
         <div class="spinner"></div>
-    </div> -->
+    </div>
 
     <div class="sideNavBar">
         <div class="hamburger">
@@ -27,7 +27,7 @@
         <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
         <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
         <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
-        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
         <div class="logo">
             <div class="img"></div>
             <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
@@ -81,7 +81,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -103,7 +103,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -125,7 +125,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -147,7 +147,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                     </div>
                 </div>
@@ -178,7 +178,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -200,7 +200,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -222,7 +222,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                         <div class="meal-item">
                             <div class="meal-item-head">
@@ -244,7 +244,7 @@
                                     <p class="mealSize">1 Serving</p>
                                 </div>
                             </div>
-                            <button><i class="fa-solid fa-plus"></i> Add Food</button>
+                            <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
                         </div>
                     </div>
                 </div>

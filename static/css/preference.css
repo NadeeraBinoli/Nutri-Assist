@@ -1,23 +1,29 @@
 @import url(dashboard.css);
 
+body{
+    overflow-x: hidden;
+}
+
+.mainContentDiv{
+    margin-bottom: 4rem;
+}
+
 /* Primary Diet Section  */
 
-.primary-diet {
-    padding: 20px;
-    color: white;
-    margin: 20px auto;
-}
-
-.primary-diet h3 {
+h3 {
     font-size: 22px;
     margin-bottom: 10px;
-    text-align: center;
 }
 
-.primary-diet p {
+p {
     font-size: 16px;
-    text-align: center;
+    /* text-align: center; */
     margin-bottom: 20px;
+    color: var(--dim-gray);
+}
+
+.main-content section{
+    margin: 3rem 0;
 }
 
 .diet-options {
@@ -26,51 +32,7 @@
     margin-bottom: 20px;
 }
 
-.diet-btn {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    flex: 1;
-    margin: 5px;
-}
-
-.diet-btn:hover {
-    background-color: #76D3A0; /* Highlighted button on hover */
-}
-
-.load-more-btn {
-    background-color: #76D3A0;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-}
-
 /* Food Types Section */
-.food-types {
-    /* background-color: #1e1e1e; */
-    padding: 20px;
-    margin: 20px auto;
-}
-
-.food-types h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.food-types p {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 20px;
-}
 
 .food-options {
     display: flex;
@@ -78,39 +40,8 @@
     margin-bottom: 20px;
 }
 
-.food-btn {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    flex: 1;
-    margin: 5px;
-}
-
-.food-btn:hover {
-    background-color: #76D3A0; /* Highlighted button on hover */
-}
 
 /* Exclusions Section */
-.exclusions {
-    /* background-color: #1e1e1e; */
-    padding: 20px;
-    margin: 20px auto;
-}
-
-.exclusions h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.exclusions p {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 20px;
-}
 
 .exclusion-options {
     display: flex;
@@ -118,38 +49,7 @@
     margin-bottom: 20px;
 }
 
-.exclusion-btn {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    flex: 1;
-    margin: 5px;
-}
-
-.exclusion-btn:hover {
-    background-color: #76D3A0; /* Highlighted button on hover */
-}
-
 /* Medical Concerns Section */
-.medical-concerns {
-    padding: 20px;
-    margin: 20px auto;
-}
-
-.medical-concerns h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.medical-concerns p {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 20px;
-}
 
 .medical-options {
     display: flex;
@@ -157,38 +57,7 @@
     margin-bottom: 20px;
 }
 
-.medical-btn {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    flex: 1;
-    margin: 5px;
-}
-
-.medical-btn:hover {
-    background-color: #76D3A0; /* Highlighted button on hover */
-}
-
 /* Meal Layout Section */
-.meal-layout {
-    padding: 20px;
-    margin: 20px auto;
-}
-
-.meal-layout h3 {
-    font-size: 22px;
-    margin-bottom: 10px;
-    text-align: center;
-}
-
-.meal-layout p {
-    font-size: 16px;
-    text-align: center;
-    margin-bottom: 20px;
-}
 
 .meal-variety {
     display: flex;
@@ -196,9 +65,10 @@
     margin-bottom: 20px;
 }
 
-.meal-btn {
-    background-color: #333;
-    color: white;
+.meal-btn,.medical-btn,.exclusion-btn,.diet-btn,.food-btn  {
+    background-color: var(--panache-white);
+    color: var(--nero-black);
+    font-weight: 600;
     padding: 10px 20px;
     border: none;
     border-radius: 8px;
@@ -207,20 +77,19 @@
     margin: 5px;
 }
 
-.meal-btn:hover {
-    background-color: #76D3A0; /* Highlighted button on hover */
+.add-more-btn i {
+    margin-left: 1rem;
+    font-size: .8rem;
 }
 
-.add-more-btn {
-    background-color: #76D3A0;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    display: block;
-    /* width: 100%; */
-    margin-top: 10px;
+.fa-minus{
+    font-size: .8rem;
+    color: var(--nero-black);
+    border: 2px solid var(--nero-black);
+    padding: 5px;
+    border-radius: 4rem;
+    margin-left: 1rem;
+
 }
 
 /* Button Group */
@@ -232,8 +101,8 @@
 }
 
 .action-btn {
-    background-color: #76D3A0;
-    color: black;
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
     padding: 12px 20px;
     border: none;
     border-radius: 8px;
@@ -242,58 +111,48 @@
     transition: background 0.3s ease;
 }
 
-.action-btn:hover {
-    background-color: #66b08a;
+.meal-btn:hover,
+.action-btn:hover,
+.medical-btn:hover,
+.exclusion-btn:hover,
+.diet-btn:hover,
+.food-btn:hover {
+    color: var(--mantis-light-green);
+    background-color: var(--crusoe-dark-green);
 }
 
-/* preference.css */
+.meal-btn i:hover{
+    color: var(--mantis-light-green);
+    border-color: var(--mantis-light-green);
+}
 
-/* General button styles */
 button {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin: 5px;
     transition: background-color 0.3s ease;
+    margin: 5px;
 }
 
-/* Highlighted selected buttons */
-button.selected {
-    font-weight: bold;
-    color: white;
-}
 
 button.selected-green {
-    background-color: #76D3A0;  /* Green background for general categories */
+    color: var(--mantis-light-green);
+    background-color: var(--crusoe-dark-green);
 }
 
 button.selected-red {
-    background-color: #f44336;  /* Red background for exclusions and medical conditions */
+    background-color: #f44336;
 }
 
-/* On hover */
-button:hover {
-    background-color: #66b08a;
-}
-
-
-/* Message container styling */
 .message-container {
     margin-top: 20px;
     padding: 15px;
-    background-color: #f4f4f4;
     border-radius: 5px;
     text-align: center;
-    display: none; /* Initially hidden */
+    display: none; 
 }
 
 /* Success message style */
 .message-container.success {
-    background-color: #76D3A0;
-    color: #2e2e2e;
+    background-color: #033419;
+    color: white;
 }
 
 /* Error message style */
@@ -301,3 +160,5 @@ button:hover {
     background-color: #f44336;
     color: white;
 }
+
+

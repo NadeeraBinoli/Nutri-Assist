@@ -5,7 +5,7 @@ body{
 }
 
 /* Health Form Styling */
-.health-form {
+.bmi-calculator {
     background-color: #1E1E1E;
     padding: 30px;
     border-radius: 10px;
@@ -14,56 +14,90 @@ body{
     margin: 20px auto;
 }
 
-.health-form h2 {
+.bmi-calculator h2 {
     font-size: 24px;
     text-align: center;
     margin-bottom: 20px;
 }
 
-.form-group {
-    margin-bottom: 15px;
-}
 
 label {
     display: block;
-    margin-bottom: 8px;
+    margin: 10px 0 5px;
+    font-size: 14px;
 }
 
-select, input[type="range"], button {
+select, input[type="text"], button {
     width: 100%;
-    padding: 10px;
-    margin-top: 8px;
-    background-color: #333;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #4CAF50;
+    font-size: 16px;
+    background: transparent;
     color: white;
-    border: none;
-    border-radius: 8px;
+    text-align: center;
 }
 
 button {
-    background-color: #76D3A0;
+    background-color: #4CAF50;
+    color: white;
     cursor: pointer;
+    border: none;
+    font-weight: bold;
 }
 
 button:hover {
-    background-color: #66b08a;
+    background-color: #45a049;
 }
 
-/* Slider containers for height and weight */
-.slider-container {
+.age-input {
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
 }
 
-/* Individual slider values */
-span {
-    margin-left: 10px;
-    font-size: 16px;
+.age-input button {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    background: transparent;
+    border: 1px solid #4CAF50;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
 }
 
-input[type="range"] {
-    width: 80%;
+.bmi-container {
+    text-align: center;
 }
+
+.bmi-value span {
+    display: block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.bmi-slider-container input {
+    width: 100%;
+}
+
+.calculate-btn {
+    width: 100%;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.calculate-btn:hover {
+    background: #45a049;
+}
+
 
 /* BMI Section */
 .bmi-section {

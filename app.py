@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify, render_template,redirect
+from flask import Flask, request, jsonify, render_template,redirect,session, url_for
 import mysql.connector # Connects to the MySQL database.
 from flask_mail import Mail, Message
 import re  # Regular expression for email validation
 from auth import auth  # Import the new auth module 
 #import os   For environment variables
-from dashboard import dashboard_bp  # Import the Blueprint
+from dashboard import dashboard_bp  # Import the dashboard Blueprint
 
 
 app = Flask(__name__) # Creates a Flask web application instance.
@@ -32,7 +32,8 @@ cursor = db.cursor() # Creates a cursor object to execute SQL queries
 
 # Register Blueprint
 app.register_blueprint(auth)
-app.register_blueprint(dashboard_bp, url_prefix='/dashboard')  # All routes in dashboard.py will start with /dashboard
+app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+
 
 # Define Routes
 
@@ -50,7 +51,9 @@ def login_page():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    if "user_id" not in session:
+        return redirect(url_for("login_page"))  # Redirect if not logged in
+    return render_template("dashboard.html", user_name=session.get("user_name"))
 
 @app.route("/forgot_password", methods=["POST"])
 def forgot_password():
@@ -58,9 +61,11 @@ def forgot_password():
     # Logic to handle the email and send a reset link
     return jsonify({"message": "Password reset link has been sent to your email."})
 
-@app.route('/preference')
+@app.route("/preference")
 def preference():
-    return render_template('preference.html')
+    if "user_id" not in session:
+        return redirect(url_for("login_page"))  # Redirect if not logged in
+    return render_template("preference.html", user_name=session.get("user_name"))
 
 @app.route('/healthTracker')
 def healthTracker():
@@ -74,9 +79,17 @@ def grocery():
 def recipe():
     return render_template('recipe.html')
 
-@app.route('/account')
+@app.route("/account")
 def account():
-    return render_template('account.html')
+    if "user_id" not in session:
+        return redirect(url_for("login_page"))  # Redirect if not logged in
+    
+    # Retrieve the values from the session, defaulting to an empty string or None if not found
+    user_name = session.get("user_name", "Unknown User")
+    user_email = session.get("user_email", "Not Available")
+
+    return render_template("account.html", user_name=user_name, user_email=user_email)
+
 
 @app.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):

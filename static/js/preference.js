@@ -1,4 +1,54 @@
-// preference.js
+document.addEventListener("DOMContentLoaded", function() {
+    fetch('/dashboard/get_user_preferences')
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            selectedDiet = data.dietPlan;
+            selectedFoodTypes = data.foodTypes;
+            selectedAllergies = data.allergies;
+            selectedMedicalConditions = data.medicalConditions;
+            selectedMeals = data.mealFrequency;
+
+            // Highlight selected diet
+            document.querySelectorAll('.diet-btn').forEach(btn => {
+                if (btn.getAttribute('data-diet') === selectedDiet) {
+                    btn.classList.add('selected', 'selected-green');
+                }
+            });
+
+            // Highlight selected food types
+            document.querySelectorAll('.food-btn').forEach(btn => {
+                if (selectedFoodTypes.includes(btn.getAttribute('data-food'))) {
+                    btn.classList.add('selected', 'selected-green');
+                }
+            });
+
+            // Highlight selected allergies
+            document.querySelectorAll('.exclusion-btn').forEach(btn => {
+                if (selectedAllergies.includes(btn.getAttribute('data-allergy'))) {
+                    btn.classList.add('selected', 'selected-red');
+                }
+            });
+
+            // Highlight selected medical conditions
+            document.querySelectorAll('.medical-btn').forEach(btn => {
+                if (selectedMedicalConditions.includes(btn.getAttribute('data-condition'))) {
+                    btn.classList.add('selected', 'selected-red');
+                }
+            });
+
+            // Highlight selected meals
+            document.querySelectorAll('.meal-btn').forEach(btn => {
+                if (selectedMeals.includes(btn.getAttribute('data-meal'))) {
+                    btn.classList.add('selected', 'selected-green');
+                }
+            });
+        }
+    })
+    .catch(error => console.error('Error fetching preferences:', error));
+});
+
+
 
 // Track user selections
 let selectedDiet = '';
@@ -82,9 +132,9 @@ function getUserSelections() {
 // Function to display messages on the page
 function displayMessage(message, type) {
     const messageContainer = document.getElementById('message-container');
-    messageContainer.textContent = message;  // Set the message text
-    messageContainer.className = 'message-container';  // Reset class
-    messageContainer.classList.add(type);  // Add 'success' or 'error' class based on the type
+    messageContainer.textContent = message; 
+    messageContainer.className = 'message-container'; 
+    messageContainer.classList.add(type); 
 
     // Show the message container
     messageContainer.style.display = 'block';
@@ -99,7 +149,7 @@ function displayMessage(message, type) {
 document.getElementById('save-changes').addEventListener('click', function() {
     const userData = getUserSelections();
 
-    fetch('/dashboard/save_user_preferences', {  // Correct the URL to include '/dashboard'
+    fetch('/dashboard/save_user_preferences', { 
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -22,8 +22,8 @@
         <div class="hamburger">
             <i class="fa-solid fa-bars"></i>
         </div>
-        <a class="menu-item" id="menu-item-focused" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
-        <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" id="menu-item-focused" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
         <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
         <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
         <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
@@ -53,60 +53,35 @@
     <section class="grid-container">
             <!-- calculator -->
 
-        <section class="grid-item health-form">
-            <!-- Gender Dropdown -->
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender">
-                    <option value="female">Female</option>
-                    <option value="male">Male</option>
-                </select>
+        <section class="grid-item bmi-calculator">
+            <label for="gender">Gender</label>
+            <select id="gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+            </select>
+    
+            <label>Age</label>
+            <div class="age-input">
+                <button onclick="changeAge(-1)">-</button>
+                <input type="text" id="age" value="25" readonly>
+                <button onclick="changeAge(1)">+</button>
             </div>
-        
-            <!-- Age Slider -->
-            <div class="form-group">
-                <label for="age">Age</label>
-                <div class="slider-container">
-                    <input type="range" id="age" name="age" min="18" max="100" value="25">
-                    <span id="age-value">25</span>
-                </div>
-            </div>
-        
-            <!-- Height Slider -->
-            <div class="form-group">
-                <label for="height">Height</label>
-                <div class="slider-container">
-                    <input type="range" id="height-feet" name="height-feet" min="4" max="7" value="5">
-                    <span id="height-feet-value">5'</span>
-                    <input type="range" id="height-inch" name="height-inch" min="0" max="12" value="11">
-                    <span id="height-inch-value">11"</span>
-                </div>
-            </div>
-        
-            <!-- Weight Slider -->
-            <div class="form-group">
-                <label for="weight">Weight</label>
-                <div class="slider-container">
-                    <input type="range" id="weight" name="weight" min="50" max="250" value="85.56">
-                    <span id="weight-value">85.56</span>
-                </div>
-            </div>
-        
-            <!-- Activity Dropdown -->
-            <div class="form-group">
-                <label for="activity">Activity Level</label>
-                <select id="activity" name="activity">
-                    <option value="sedentary">Sedentary</option>
-                    <option value="light">Light</option>
-                    <option value="moderate" selected>Moderate</option>
-                    <option value="active">Active</option>
-                </select>
-            </div>
-        
-            <!-- Calculate Button -->
-            <div class="form-group">
-                <button id="calculate-btn">Calculate</button>
-            </div>
+    
+            <label for="height">Height (cm)</label>
+            <input type="text" id="height" placeholder="Enter height">
+    
+            <label for="weight">Weight (kg)</label>
+            <input type="text" id="weight" placeholder="Enter weight">
+    
+            <label for="activity">Activity</label>
+            <select id="activity">
+                <option value="sedentary">Sedentary</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="active">Active</option>
+            </select>
+    
+            <button class="calculate-btn" onclick="calculateBMI()">Calculate</button>
         </section>
         
         <!-- BMI Display Section -->
