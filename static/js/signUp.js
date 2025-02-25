@@ -39,7 +39,7 @@ signupForm.addEventListener("submit", async function(event) {
     }
 
     try {
-        const response = await fetch("/signup", {
+        const response = await fetch("auth/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
@@ -89,7 +89,7 @@ document.querySelector("#otpForm button").addEventListener("click", async functi
     console.log("Attempting to send OTP verification request");
     try {
         console.log("Sending data:", { email, otp });
-        const response = await fetch("/verify_otp", {
+        const response = await fetch("auth/verify_otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, otp })
@@ -131,7 +131,7 @@ document.getElementById("resendOtpButton").addEventListener("click", async funct
     }
 
     try {
-        const response = await fetch("/resend_otp", {
+        const response = await fetch("auth/resend_otp", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email })

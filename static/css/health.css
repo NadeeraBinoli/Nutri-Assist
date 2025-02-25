@@ -248,18 +248,43 @@ button:hover {
     margin-bottom: 10px;
 }
 
-.progress-bar {
-    width: 100%;
-    height: 15px;
-    background-color: #333;
-    border-radius: 10px;
-    overflow: hidden;
+.water-intake-progress-div{
+    display: flex;
+    font-size: 2rem;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
 
-#progress {
-    height: 100%;
-    background-color: #76D3A0; /* Green indicating the progress */
+.waterProgressIcon{
+    display: flex;
+    flex-direction: column;
+    gap:8rem;
+    justify-content: space-between;
 }
+
+.waterIntakeBar-container {
+    width: 50px; /* Adjust width as needed */
+    height: 200px; /* This represents the full target water level */
+    border: 2px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: lightgray; /* Empty part */
+    display: flex;
+    align-items: flex-end; /* Align water to bottom */
+}
+
+.waterIntakeBar {
+    width: 100%;
+    height: 0%; /* Initially empty */
+    background-color: blue;
+    transition: height 0.3s ease-in-out;
+    position: absolute;
+    bottom: 0;
+}
+
 
 .drink-log {
     margin-top: 20px;

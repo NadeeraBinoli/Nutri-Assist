@@ -99,6 +99,29 @@ def get_user_preferences():
         })
     else:
         return jsonify({'status': 'error', 'message': 'No preferences found'})
+    
+
+@dashboard_bp.route('/calculate_bmi', methods=['POST'])
+def calculate_bmi():
+    try:
+        data = request.json
+        height = float(data['height'])
+        weight = float(data['weight'])
+        bmi = float(data['bmi'])
+        user_id = 1  # Replace with actual user ID from session/auth system
+
+        # Store BMI data in the database
+        query = """
+            INSERT INTO HealthProfile (userID, weight, height, bmi) 
+            VALUES (%s, %s, %s, %s)
+        """
+        values = (user_id, weight, height, bmi)
+        cursor.execute(query, values)
+        db.commit()
+
+        return jsonify({"message": "BMI stored successfully", "bmi": bmi}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 # updating with the old one 
 

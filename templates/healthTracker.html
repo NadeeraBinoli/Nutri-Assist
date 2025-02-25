@@ -27,7 +27,7 @@
         <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
         <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
         <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
-        <a class="menu-item" href=""><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
         <div class="logo">
             <div class="img"></div>
             <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
@@ -131,9 +131,15 @@
         
             <!-- Water Intake Progress -->
             <div class="water-progress">
-                <p>1.9 / 2.5L</p>
-                <div class="progress-bar">
-                    <div id="progress" style="width: 76%"></div>
+                <p><span class="drinkedWater">1.9</span> / <span class="waterTarget">2.5L</span></p>
+                <div class="water-intake-progress-div">
+                    <div class="waterProgressIcon">
+                        <i class="fa-solid fa-circle-plus"></i>
+                        <i class="fa-solid fa-circle-minus"></i>
+                    </div>
+                    <div class="waterIntakeBar-container">
+                        <div class="waterIntakeBar"></div> <!-- This fills up vertically -->
+                    </div>
                 </div>
             </div>
         

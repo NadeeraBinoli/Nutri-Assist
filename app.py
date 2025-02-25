@@ -67,9 +67,11 @@ def preference():
         return redirect(url_for("login_page"))  # Redirect if not logged in
     return render_template("preference.html", user_name=session.get("user_name"))
 
-@app.route('/healthTracker')
+@app.route("/healthTracker")
 def healthTracker():
-    return render_template('healthTracker.html')
+    if "user_id" not in session:
+        return redirect(url_for("login_page"))  # Redirect if not logged in
+    return render_template("healthTracker.html", user_name=session.get("user_name"))
 
 @app.route('/grocery')
 def grocery():
