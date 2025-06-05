@@ -74,6 +74,7 @@ def signup():
         return jsonify({"error": "Database error, please try again later!"}), 500
 
 
+
 @auth.route("/verify_otp", methods=["POST"])
 def verify_otp():
     data = request.json
@@ -119,9 +120,9 @@ def verify_otp():
 
 
 
-
 @auth.route("/resend_otp", methods=["POST"])
 def resend_otp():
+    cursor = db.cursor(buffered=True)
     data = request.json
     email = data.get("email")
 
@@ -150,6 +151,7 @@ def resend_otp():
 
 @auth.route("/login", methods=["POST"])
 def login():
+    cursor = db.cursor(buffered=True)
     try:
         data = request.json
         email = data.get("email")
@@ -206,6 +208,7 @@ def logout():
 
 @auth.route("/forgot_password", methods=["POST"])
 def forgot_password():
+    cursor = db.cursor(buffered=True)
     data = request.json
     email = data.get("email")
     
@@ -244,6 +247,7 @@ def forgot_password():
 
 @auth.route("/update-email", methods=["POST"])
 def update_email():
+    cursor = db.cursor(buffered=True)
     if "user_id" not in session:
         return jsonify({"success": False, "message": "User not logged in."}), 401
 
@@ -268,7 +272,7 @@ def update_email():
         updated_email = cursor.fetchone()[0]
 
         # Update session with the new email
-        session["email"] = updated_email
+        session["user_email"]= updated_email
         session.modified = True  # 🔥 This forces Flask to recognize session changes
 
         return jsonify({"success": True, "new_email": updated_email})
@@ -282,6 +286,7 @@ def update_email():
 
 @auth.route("/delete-account", methods=["POST"])
 def delete_account():
+    cursor = db.cursor(buffered=True)
     if "user_id" not in session:
         return jsonify({"success": False, "message": "User not logged in."}), 401
 
@@ -304,40 +309,41 @@ def delete_account():
         return jsonify({"success": False, "message": "An unexpected error occurred."})
 
 
-# @auth.route("/reset_password/<token>", methods=["POST"])
-# def reset_password(token):
-#     try:
-#         # Decode JWT token to get email
-#         data = jwt.decode(token, JWT_RESET_KEY, algorithms=["HS256"])
-#         email = data.get("email")
-#     except jwt.ExpiredSignatureError:
-#         return jsonify({"error": "Reset link expired!"}), 400
-#     except jwt.InvalidTokenError:
-#         return jsonify({"error": "Invalid reset link!"}), 400
+@auth.route("/reset_password/<token>", methods=["POST"])
+def reset_password(token):
+    cursor = db.cursor(buffered=True)
+    try:
+        # Decode JWT token to get email
+        data = jwt.decode(token, JWT_RESET_KEY, algorithms=["HS256"])
+        email = data.get("email")
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Reset link expired!"}), 400
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Invalid reset link!"}), 400
     
-#     data = request.json
-#     new_password = data.get("newPassword")
-#     confirm_password = data.get("confirmPassword")
+    data = request.json
+    new_password = data.get("newPassword")
+    confirm_password = data.get("confirmPassword")
     
-#     # Check if password and confirm password fields are provided
-#     if not new_password or not confirm_password:
-#         return jsonify({"error": "All fields are required!"}), 400
+    # Check if password and confirm password fields are provided
+    if not new_password or not confirm_password:
+        return jsonify({"error": "All fields are required!"}), 400
     
-#     # Check if passwords match
-#     if new_password != confirm_password:
-#         return jsonify({"error": "Passwords do not match!"}), 400
+    # Check if passwords match
+    if new_password != confirm_password:
+        return jsonify({"error": "Passwords do not match!"}), 400
     
-#     # Check if password length is valid
-#     if len(new_password) < 8:
-#         return jsonify({"error": "Password must be at least 8 characters long!"}), 400
+    # Check if password length is valid
+    if len(new_password) < 8:
+        return jsonify({"error": "Password must be at least 8 characters long!"}), 400
     
-#     hashed_password = generate_password_hash(new_password)
+    hashed_password = generate_password_hash(new_password)
 
-#     # Update password in the database
-#     try:
-#         cursor = db.cursor()
-#         cursor.execute("UPDATE User SET password = %s WHERE email = %s", (hashed_password, email))
-#         db.commit()
-#         return jsonify({"message": "Password has been reset successfully!"}), 200
-#     except mysql.connector.Error:
-#         return jsonify({"error": "Database error, please try again later!"}), 500
+    # Update password in the database
+    try:
+        cursor = db.cursor()
+        cursor.execute("UPDATE User SET password = %s WHERE email = %s", (hashed_password, email))
+        db.commit()
+        return jsonify({"message": "Password has been reset successfully!"}), 200
+    except mysql.connector.Error:
+        return jsonify({"error": "Database error, please try again later!"}), 500
