@@ -5,6 +5,7 @@ import re  # Regular expression for email validation
 from auth import auth  # Import the new auth module 
 #import os   For environment variables
 from dashboard import dashboard_bp  # Import the dashboard Blueprint
+from waitress import serve
 
 
 app = Flask(__name__) # Creates a Flask web application instance.
@@ -38,6 +39,7 @@ app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
 # Define Routes
 
 @app.route("/")
+@app.route("/index")
 def home():
     return render_template("index.html")
 
@@ -143,4 +145,5 @@ def subscribe():
     
 
 if __name__ == "__main__":
+    serve(app, host="0.0.0.0", port = 8000)
     app.run(debug=True)

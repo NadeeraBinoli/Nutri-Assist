@@ -309,41 +309,41 @@ def delete_account():
         return jsonify({"success": False, "message": "An unexpected error occurred."})
 
 
-@auth.route("/reset_password/<token>", methods=["POST"])
-def reset_password(token):
-    cursor = db.cursor(buffered=True)
-    try:
-        # Decode JWT token to get email
-        data = jwt.decode(token, JWT_RESET_KEY, algorithms=["HS256"])
-        email = data.get("email")
-    except jwt.ExpiredSignatureError:
-        return jsonify({"error": "Reset link expired!"}), 400
-    except jwt.InvalidTokenError:
-        return jsonify({"error": "Invalid reset link!"}), 400
+# @auth.route("/reset_password/<token>", methods=["POST"])
+# def reset_password(token):
+#     cursor = db.cursor(buffered=True)
+#     try:
+#         # Decode JWT token to get email
+#         data = jwt.decode(token, JWT_RESET_KEY, algorithms=["HS256"])
+#         email = data.get("email")
+#     except jwt.ExpiredSignatureError:
+#         return jsonify({"error": "Reset link expired!"}), 400
+#     except jwt.InvalidTokenError:
+#         return jsonify({"error": "Invalid reset link!"}), 400
     
-    data = request.json
-    new_password = data.get("newPassword")
-    confirm_password = data.get("confirmPassword")
+#     data = request.json
+#     new_password = data.get("newPassword")
+#     confirm_password = data.get("confirmPassword")
     
-    # Check if password and confirm password fields are provided
-    if not new_password or not confirm_password:
-        return jsonify({"error": "All fields are required!"}), 400
+#     # Check if password and confirm password fields are provided
+#     if not new_password or not confirm_password:
+#         return jsonify({"error": "All fields are required!"}), 400
     
-    # Check if passwords match
-    if new_password != confirm_password:
-        return jsonify({"error": "Passwords do not match!"}), 400
+#     # Check if passwords match
+#     if new_password != confirm_password:
+#         return jsonify({"error": "Passwords do not match!"}), 400
     
-    # Check if password length is valid
-    if len(new_password) < 8:
-        return jsonify({"error": "Password must be at least 8 characters long!"}), 400
+#     # Check if password length is valid
+#     if len(new_password) < 8:
+#         return jsonify({"error": "Password must be at least 8 characters long!"}), 400
     
-    hashed_password = generate_password_hash(new_password)
+#     hashed_password = generate_password_hash(new_password)
 
-    # Update password in the database
-    try:
-        cursor = db.cursor()
-        cursor.execute("UPDATE User SET password = %s WHERE email = %s", (hashed_password, email))
-        db.commit()
-        return jsonify({"message": "Password has been reset successfully!"}), 200
-    except mysql.connector.Error:
-        return jsonify({"error": "Database error, please try again later!"}), 500
+#     # Update password in the database
+#     try:
+#         cursor = db.cursor()
+#         cursor.execute("UPDATE User SET password = %s WHERE email = %s", (hashed_password, email))
+#         db.commit()
+#         return jsonify({"message": "Password has been reset successfully!"}), 200
+#     except mysql.connector.Error:
+#         return jsonify({"error": "Database error, please try again later!"}), 500
