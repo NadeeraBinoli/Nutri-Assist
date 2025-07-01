@@ -1,26 +1,32 @@
 from datasets import load_dataset
 from fuzzywuzzy import fuzz
+import ast # Import the ast module
 
 def load_parsed_recipes(limit=10):
     raw_dataset = load_dataset("arya123321/recipes", split="train")
     parsed_recipes = []
     for i, item in enumerate(raw_dataset.select(range(min(limit, len(raw_dataset))))):
         try:
-            # Directly extract data from the dataset item
             title = item.get("title", "No Title")
             ingredients = item.get("ingredients", [])
-            directions = item.get("directions", []) # Dataset uses 'directions'
-
-            # Ensure ingredients and directions are lists of strings
-            if isinstance(ingredients, str):
-                ingredients = [i.strip() for i in ingredients.split('\n') if i.strip()]
+            directions = item.get("instructions_list", [])
+            if isinstance(ingredients, str):                                                                                  
+                ingredients = [i.strip() for i in ingredients.split(';') if i.strip()] 
             if isinstance(directions, str):
-                directions = [d.strip() for d in directions.split('\n') if d.strip()]
+                try:
+                    directions = ast.literal_eval(directions)
+                except (ValueError, SyntaxError):
+                    # Fallback if it's not a valid list string, treat as single instruction
+                    directions = [directions.strip()]
+            # Ensure it's always a list, even if it was None or not a string initially
+            if not isinstance(directions, list):
+                directions = []
 
             parsed_recipes.append({
                 "title": title,
                 "ingredients": ingredients,
-                "instructions": directions, # Map 'directions' to 'instructions' for HTML
+                "instructions": directions,
+                "url": item.get("url", ""), # Add the URL here
                 "image": item.get("image", ""),
                 "category": item.get("category", ""),
                 "prep_time": item.get("prep_time", ""),
@@ -37,8 +43,5 @@ def load_parsed_recipes(limit=10):
                 "dietary_fiber_g": item.get("dietary_fiber_g", "")
             })
         except Exception as e:
-            pass # Silently skip errors during recipe processing
-            # print(f"  Skipping a recipe due to error processing item: {e}")
-    # print(f"Finished loading recipes. Total parsed recipes: {len(parsed_recipes)}")
+            pass
     return parsed_recipes
-

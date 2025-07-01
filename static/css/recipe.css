@@ -2,6 +2,7 @@
 
 .mainContentDiv {
     margin-bottom: 4rem;
+    padding: 20px;
 }
 
 .recipe-grid {
@@ -31,6 +32,17 @@
     font-size: 22px;
     margin-bottom: 15px;
     color: var(--mantis-light-green);
+}
+
+.recipe-title a {
+    text-decoration: none;
+    font-size: 25px;
+    font-family: var(--primary-font);
+}
+
+.recipe-title a:hover{
+    font-family: var(--primary-font);
+    color: var(--crusoe-dark-green);
 }
 
 .recipe-details h4 {
@@ -74,8 +86,6 @@
 
 #suggestion-container {
     display: none; /* Hidden by default */
-    /* background-color: var(--dark-black); */
-    /* border: 1px solid var(--mantis-light-green); */
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 20px;
@@ -106,4 +116,76 @@
 
 #suggestion-container button:hover {
     opacity: 0.9;
+}
+
+/* Styles for recipe_detail.html */
+
+.divSplit{
+    display: flex;
+    gap: 3rem;
+}
+
+.splitLeft{
+    width: 100%;
+}
+
+.mainContentDiv h1 {
+    font-family: var(--primary-font);
+    margin-bottom: 20px;
+    font-size: 38px;
+}
+
+.mainContentDiv h2 {
+    font-family: var(--primary-font);
+        color: var(--mantis-light-green);
+    font-size: 28px;
+}
+
+.recipe-detail-image {
+    width: 100%;
+    max-width: 600px; /* Limit width for larger screens */
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.mainContentDiv p {
+    color: var(--panache-white);
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.mainContentDiv p strong {
+    color: var(--mantis-light-green);
+}
+
+.mainContentDiv ul,
+.mainContentDiv ol {
+    list-style-position: inside;
+    padding-left: 0;
+    color: var(--dim-gray);
+    margin-bottom: 20px;
+}
+
+.mainContentDiv ul li,
+.mainContentDiv ol li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.back-button {
+    display: inline-block;
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-bottom: 30px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #5cb85c; /* A slightly darker green on hover */
 }

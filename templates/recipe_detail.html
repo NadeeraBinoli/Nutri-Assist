@@ -3,22 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>{{ recipe.title }} - Recipe Details</title>
     <link rel="stylesheet" href="../static/css/recipe.css">
-    <!-- font awesome link -->
+    <!-- Add any specific CSS for recipe details here if needed -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-    <!-- google fonts link -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="spinner"></div>
-    </div>
-
     <div class="sideNavBar">
         <div class="hamburger">
             <i class="fa-solid fa-bars"></i>
@@ -46,29 +39,55 @@
         </nav>
 
         <div class="mainContentDiv">
-            <h1>Let’s Search Recipes</h1>
-            <div class="search-bar">
-                <input type="text" placeholder="Search for recipes...">
-                <button>Search</button>
+            <a href="{{ url_for('recipe') }}" class="back-button">&larr; Back to Recipes</a>
+            
+            <div class="divSplit">
+            <div class="splitLeft">
+                {% if recipe.image %}
+                <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-detail-image">
+                {% endif %}
+
+                <h2>Nutritional Information:</h2>
+                <ul>
+                    <li><strong>Calories:</strong> {{ recipe.calories }}</li>
+                    <li><strong>Carbohydrates:</strong> {{ recipe.carbohydrates_g }}g</li>
+                    <li><strong>Sugars:</strong> {{ recipe.sugars_g }}g</li>
+                    <li><strong>Fat:</strong> {{ recipe.fat_g }}g</li>
+                    <li><strong>Saturated Fat:</strong> {{ recipe.saturated_fat_g }}g</li>
+                    <li><strong>Cholesterol:</strong> {{ recipe.cholesterol_mg }}mg</li>
+                    <li><strong>Protein:</strong> {{ recipe.protein_g }}g</li>
+                    <li><strong>Dietary Fiber:</strong> {{ recipe.dietary_fiber_g }}g</li>
+                </ul>
             </div>
-            <div id="suggestion-container"></div>
-            <div class="recipe-grid">
-                {% for recipe in recipes %}
-                <div class="recipe-card">
-                    <img src="{{ recipe.image }}" alt="{{ recipe.title }}" class="recipe-image">
-                    <h3 class="recipe-title"><a href="{{ url_for('recipe_detail', url=recipe.url) }}">{{ recipe.title }}</a></h3>
-                    <div class="recipe-details">
-                        <p><strong>Category:</strong> {{ recipe.category }}</p>
-                        <p><strong>Total Time:</strong> {{ recipe.total_time }}</p>
-                        <p><strong>Calories:</strong> {{ recipe.calories }}</p>
-                    </div>
-                </div>
-                {% endfor %}
+
+            <div class="splitRight">
+                <h1>{{ recipe.title }}</h1>
+
+                <p><strong>Category:</strong> {{ recipe.category }}</p>
+                <p><strong>Prep Time:</strong> {{ recipe.prep_time }}</p>
+                <p><strong>Cook Time:</strong> {{ recipe.cook_time }}</p>
+                <p><strong>Total Time:</strong> {{ recipe.total_time }}</p>
+                <p><strong>Servings:</strong> {{ recipe.servings }}</p>
+
+                <h2>Ingredients:</h2>
+                <ul>
+                    {% for ingredient in recipe.ingredients %}
+                    <li>{{ ingredient }}</li>
+                    {% endfor %}
+                </ul>
+
+                <h2>Instructions:</h2>
+                <ol>
+                    {% for instruction in recipe.instructions %}
+                    <li>{{ instruction }}</li>
+                    {% endfor %}
+                </ol>
             </div>
+
+            </div>
+
         </div>
     </div>
-
     <script src="../static/js/darkmode.js"></script>
-    <script src="{{ url_for('static', filename='js/recipe.js') }}"></script>
 </body>
 </html>

@@ -1,45 +1,34 @@
-from flask import Flask, request, jsonify, render_template,redirect,session, url_for
-import mysql.connector # Connects to the MySQL database.
+from flask import Flask, request, jsonify, render_template, redirect, session, url_for
+import mysql.connector
 from flask_mail import Mail, Message
-import re  # Regular expression for email validation
-from auth import auth  # Import the new auth module 
-#import os   For environment variables
-from dashboard import dashboard_bp  # Import the dashboard Blueprint
-#from waitress import serve
-from flask import Flask, render_template
+import re
+from auth import auth
+from dashboard import dashboard_bp
 from recipe import load_parsed_recipes
 from fuzzywuzzy import fuzz
 
-
-
-app = Flask(__name__) # Creates a Flask web application instance.
-# Configure Flask Secret Key for Sessions (Change this to a secure key)
+app = Flask(__name__)
 app.secret_key = "1e9ac1d030f2c0b496c6dd6aeb30424b"
 
-# Configure Flask-Mail
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Use your SMTP provider. Its specifies the mail server (Gmail in this case)
-app.config['MAIL_PORT'] = 587 # Uses port 587 (TLS) for secure communication.
-app.config['MAIL_USE_TLS'] = True # Enables TLS (Transport Layer Security) for encryption.
-app.config['MAIL_USERNAME'] = 'bababablackship1999@gmail.com' # os.getenv('MAIL_USERNAME')  # Your email
-app.config['MAIL_PASSWORD'] = 'zden vlhw inos vbbx' # os.getenv('MAIL_PASSWORD') # App password (not your main password)
-app.config['MAIL_DEFAULT_SENDER'] = 'bababablackship1999@gmail.com'  # Use environment variables for security
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'bababablackship1999@gmail.com'
+app.config['MAIL_PASSWORD'] = 'zden vlhw inos vbbx'
+app.config['MAIL_DEFAULT_SENDER'] = 'bababablackship1999@gmail.com'
 
-mail = Mail(app) # Initializes Flask-Mail with the Flask app.
+mail = Mail(app)
 
-# Connect to MySQL
 db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="1234",
     database="mealPlanner"
 )
-cursor = db.cursor() # Creates a cursor object to execute SQL queries
+cursor = db.cursor()
 
-# Register Blueprint
 app.register_blueprint(auth)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
-
-# Define Routes
 
 @app.route("/")
 @app.route("/index")
@@ -48,42 +37,40 @@ def home():
 
 @app.route("/signup")
 def signup_page():
-    return render_template("signUp.html")  # Ensure this file exists in 'templates/'
+    return render_template("signUp.html")
 
 @app.route("/login")
 def login_page():
-    return render_template("Login.html")  # Ensure this file exists in 'templates/'
+    return render_template("Login.html")
 
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
-        return redirect(url_for("login_page"))  # Redirect if not logged in
+        return redirect(url_for("login_page"))
     return render_template("dashboard.html", user_name=session.get("user_name"))
 
 @app.route("/forgot_password", methods=["POST"])
 def forgot_password():
     email = request.json.get("email")
-    # Logic to handle the email and send a reset link
     return jsonify({"message": "Password reset link has been sent to your email."})
 
 @app.route("/preference")
 def preference():
     if "user_id" not in session:
-        return redirect(url_for("login_page"))  # Redirect if not logged in
+        return redirect(url_for("login_page"))
     return render_template("preference.html", user_name=session.get("user_name"))
 
 @app.route("/healthTracker")
 def healthTracker():
     if "user_id" not in session:
-        return redirect(url_for("login_page"))  # Redirect if not logged in
+        return redirect(url_for("login_page"))
     return render_template("healthTracker.html", user_name=session.get("user_name"))
 
 @app.route('/grocery')
 def grocery():
     return render_template('grocery.html')
 
-##############################################
-recipes = load_parsed_recipes(limit=200) # Reduced limit for faster loading
+recipes = load_parsed_recipes(limit=200)
 
 @app.route('/recipe')
 def recipe():
@@ -120,19 +107,15 @@ def api_recipes():
         print(f"Error in /api/recipes: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500
 
-##############################################
-
 @app.route("/account")
 def account():
     if "user_id" not in session:
-        return redirect(url_for("login_page"))  # Redirect if not logged in
+        return redirect(url_for("login_page"))
     
-    # Retrieve the values from the session, defaulting to an empty string or None if not found
     user_name = session.get("user_name", "Unknown User")
     user_email = session.get("user_email", "Not Available")
 
     return render_template("account.html", user_name=user_name, user_email=user_email)
-
 
 @app.route("/reset_password/<token>", methods=["GET", "POST"])
 def reset_password(token):
@@ -140,49 +123,58 @@ def reset_password(token):
         data = request.get_json()
         new_password = data.get("newPassword")
         confirm_password = data.get("confirmPassword")
-        # Handle resetting password logic here
         return jsonify({"message": "Password reset successful."})
     elif request.method == "GET":
-        # You can return the form or some confirmation message here if needed
-        return render_template("reset_password.html")  # Show the reset password form
-
+        return render_template("reset_password.html")
 
 @app.route("/subscribe", methods=["POST"])
 def subscribe():
-    data = request.json # Retrieves the JSON data from the front-end form.
-    email = data.get("email") # Extracts the email address.
+    data = request.json
+    email = data.get("email")
 
-# If no email is provided, Flask returns an error response.
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
-# Validate the email format using regular expression
     email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     if not re.match(email_regex, email):
         return jsonify({"error": "Invalid email format. Please enter a valid email address."}), 400
     
     try:
-# Check if the email already exists in the database
         cursor.execute("SELECT * FROM NewsletterSubscribers WHERE email = %s", (email,))
         existing_email = cursor.fetchone()
         if existing_email:
             return jsonify({"error": "This email is already subscribed."}), 400
         
-        cursor.execute("INSERT INTO NewsletterSubscribers (email) VALUES (%s)", (email,)) # Inserts the email into the database.
-        db.commit() # Saves the changes permanently.
+        cursor.execute("INSERT INTO NewsletterSubscribers (email) VALUES (%s)", (email,))
+        db.commit()
 
-        # Send confirmation email
         msg = Message("Subscription Confirmed",
                       recipients=[email])
         msg.body = f"Hello,\n\nThank you for subscribing to our newsletter! You'll receive the latest updates from us.\n\nLove from,\nNutri-Assist Team"
         mail.send(msg)
 
-        return jsonify({"message": "Subscribed successfully! Confirmation email sent."}), 200 # Returns a JSON response with a success message
+        return jsonify({"message": "Subscribed successfully! Confirmation email sent."}), 200
 
     except mysql.connector.Error as err:
-        return jsonify({"error": "Database error, please try again later."}), 500 # Catches any errors (e.g., duplicate email) and returns an error response.
+        return jsonify({"error": "Database error, please try again later."}), 500
     
+@app.route("/recipe_detail")
+def recipe_detail():
+    recipe_url = request.args.get('url')
+    if not recipe_url:
+        return "Recipe URL not provided", 400
+
+    found_recipe = None
+    for recipe in recipes:
+        if recipe.get('url') == recipe_url:
+            found_recipe = recipe
+            break
+
+    if found_recipe:
+        return render_template('recipe_detail.html', recipe=found_recipe)
+    else:
+        return "Recipe not found", 404
+
 
 if __name__ == "__main__":
-   # # serve(app, host="0.0.0.0", port = 5000)
     app.run(debug=True)
