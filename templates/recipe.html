@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../static/css/recipe.css">
+        <!-- font awesome link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        <!-- google fonts link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+
+        <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="sideNavBar">
+        <div class="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <a class="menu-item" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
+        <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <div class="logo">
+            <div class="img"></div>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
+        </div>
+    </div>
+
+
+    <div class="main-content">
+
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="{{ url_for('account') }}">My Account</a></li>
+                <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="mainContentDiv">
+                <h2>Let’s Search Recipes</h2>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search for recipes...">
+                    <button>Search</button>
+                </div>
+            <div id="suggestion-container"></div>
+            <div class="recipe-grid">
+                {% for recipe in recipes %}
+                <div class="recipe-card">
+                    <h3 class="recipe-title">{{ recipe.title }}</h3>
+                    <div class="recipe-details">
+                        <h4>Ingredients:</h4>
+                        <ul>
+                            {% for ingredient in recipe.ingredients %}
+                            <li>{{ ingredient }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h4>Instructions:</h4>
+                        <ol>
+                            {% for instruction in recipe.instructions %}
+                            <li>{{ instruction }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+        <script src="../static/js/darkmode.js"></script>
+    <script src="{{ url_for('static', filename='js/recipe.js') }}"></script>
+</body>
+</html>

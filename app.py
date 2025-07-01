@@ -5,7 +5,11 @@ import re  # Regular expression for email validation
 from auth import auth  # Import the new auth module 
 #import os   For environment variables
 from dashboard import dashboard_bp  # Import the dashboard Blueprint
-from waitress import serve
+#from waitress import serve
+from flask import Flask, render_template
+from recipe import load_parsed_recipes
+from fuzzywuzzy import fuzz
+
 
 
 app = Flask(__name__) # Creates a Flask web application instance.
@@ -34,7 +38,6 @@ cursor = db.cursor() # Creates a cursor object to execute SQL queries
 # Register Blueprint
 app.register_blueprint(auth)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
-
 
 # Define Routes
 
@@ -79,9 +82,42 @@ def healthTracker():
 def grocery():
     return render_template('grocery.html')
 
+##############################################
+recipes = load_parsed_recipes(limit=2000)
+
 @app.route('/recipe')
 def recipe():
     return render_template('recipe.html')
+
+@app.route('/api/recipes')
+def api_recipes():
+    search_query = request.args.get('search', '').lower()
+    if search_query:
+        filtered_recipes = []
+        best_match_title = None
+        highest_score = 0
+
+        for r in recipes:
+            title_score = fuzz.partial_ratio(search_query, r['title'].lower())
+            ingredients_score = max([fuzz.partial_ratio(search_query, i.lower()) for i in r['ingredients']]) if r['ingredients'] else 0
+            
+            if title_score > 70 or ingredients_score > 70:
+                filtered_recipes.append(r)
+            
+            # Find the best single match for suggestion
+            current_best_score = max(title_score, ingredients_score)
+            if current_best_score > highest_score:
+                highest_score = current_best_score
+                best_match_title = r['title']
+
+        response_data = {'recipes': filtered_recipes}
+        if not filtered_recipes and best_match_title and highest_score > 50: # Threshold for suggestion
+            response_data['suggestion'] = best_match_title
+        
+        return jsonify(response_data)
+    return jsonify({'recipes': recipes})
+
+##############################################
 
 @app.route("/account")
 def account():
@@ -145,5 +181,5 @@ def subscribe():
     
 
 if __name__ == "__main__":
-    serve(app, host="0.0.0.0", port = 5000)
+   # # serve(app, host="0.0.0.0", port = 5000)
     app.run(debug=True)

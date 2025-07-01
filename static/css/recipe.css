@@ -1,0 +1,101 @@
+@import url(dashboard.css);
+
+.mainContentDiv {
+    margin-bottom: 4rem;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.recipe-card {
+    background-color: var(--dark-black);
+    border: 1px solid var(--panache-white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.recipe-title {
+    font-family: var(--primary-font);
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--mantis-light-green);
+}
+
+.recipe-details h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--panache-white);
+}
+
+.recipe-details ul, .recipe-details ol {
+    padding-left: 20px;
+    color: var(--dim-gray);
+}
+
+.recipe-details li {
+    margin-bottom: 8px;
+}
+
+.search-bar {
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.search-bar input {
+    padding: 10px;
+    border: 1px solid var(--panache-white);
+    border-radius: 5px 0 0 5px;
+    background-color: var(--nero-black);
+    color: var(--panache-white);
+    width: 500px;
+}
+
+.search-bar button {
+    padding: 10px 15px;
+    border: none;
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+#suggestion-container {
+    display: none; /* Hidden by default */
+    /* background-color: var(--dark-black); */
+    /* border: 1px solid var(--mantis-light-green); */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: var(--panache-white);
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+#suggestion-container p {
+    margin: 0;
+    color: var(--panache-white);
+}
+
+#suggestion-container strong {
+    color: var(--mantis-light-green);
+}
+
+#suggestion-container button {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#suggestion-container button:hover {
+    opacity: 0.9;
+}
