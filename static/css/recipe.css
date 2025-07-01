@@ -17,6 +17,7 @@
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative; /* Needed for positioning the save button */
 }
 
 .recipe-image {
@@ -188,4 +189,119 @@
 
 .back-button:hover {
     background-color: #5cb85c; /* A slightly darker green on hover */
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: var(--dark-black);
+    margin: 5% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid var(--panache-white);
+    width: 80%; /* Could be more or less, depending on screen size */
+    max-width: 600px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.close-button {
+    color: var(--panache-white);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #aaa;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-content h2 {
+    color: var(--mantis-light-green);
+    margin-bottom: 20px;
+}
+
+.modal-content form label {
+    display: block;
+    margin-bottom: 8px; /* Increased spacing */
+    color: var(--panache-white);
+    font-weight: bold; /* Make labels bold */
+}
+
+.modal-content form input[type="text"],
+.modal-content form input[type="date"],
+.modal-content form select,
+.modal-content form textarea {
+    width: calc(100% - 22px); /* Account for padding and border */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--panache-white);
+    border-radius: 5px;
+    background-color: var(--nero-black);
+    color: var(--panache-white);
+    font-size: 16px; /* Consistent font size */
+}
+
+.modal-content form select {
+    appearance: none; /* Remove default select arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23ffffff%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.2-6.4H18.2c-5%200-9.3%201.8-13.2%206.4-3.9%204.6-5.9%2010.1-5.9%2016.3%200%206.2%202%2011.7%205.9%2016.3l118.2%20118.2c4.6%203.9%2010.1%205.9%2016.3%205.9s11.7-2%2016.3-5.9l118.2-118.2c3.9-4.6%205.9-10.1%205.9-16.3s-2-11.7-5.9-16.3z%22%2F%3E%3C%2Fsvg%3E'); /* Custom arrow */
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px; /* Size of the custom arrow */
+    padding-right: 30px; /* Space for the custom arrow */
+}
+
+.modal-content form button[type="submit"] {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content form button[type="submit"]:hover {
+    background-color: #5cb85c;
+}
+
+.save-recipe-btn {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Make button full width of card */
+}
+
+.save-recipe-btn:hover {
+    background-color: #5cb85c;
+}
+
+.save-recipe-btn i {
+    margin-right: 5px;
+    color: var(--crusoe-dark-green);
 }

@@ -62,9 +62,43 @@
                         <p><strong>Total Time:</strong> {{ recipe.total_time }}</p>
                         <p><strong>Calories:</strong> {{ recipe.calories }}</p>
                     </div>
+                    <button class="save-recipe-btn" data-title="{{ recipe.title }}" data-instructions="{{ recipe.instructions | join('\n') }}" data-category="{{ recipe.category }}">
+                        <i class="fa-solid fa-bookmark"></i> Save Recipe
+                    </button>
                 </div>
                 {% endfor %}
             </div>
+        </div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="saveRecipeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Save Recipe to My Collection</h2>
+            <form id="saveRecipeForm">
+                <label for="modalRecipeTitle">Title:</label>
+                <input type="text" id="modalRecipeTitle" name="title" readonly>
+
+                <label for="modalRecipeCategory">Category:</label>
+                <select id="modalRecipeCategory" name="category" required>
+                    <option value="">Select Category</option>
+                    <option value="Breakfast">Breakfast</option>
+                    <option value="Lunch">Lunch</option>
+                    <option value="Dinner">Dinner</option>
+                    <option value="Snack">Snack</option>
+                    <option value="Dessert">Dessert</option>
+                    <option value="Beverage">Beverage</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input type="hidden" id="modalRecipeInstructions" name="instructions">
+
+                <label for="modalDateOfMeal">Date of Meal:</label>
+                <input type="date" id="modalDateOfMeal" name="date_of_meal" required>
+
+                <button type="submit">Confirm Save</button>
+            </form>
         </div>
     </div>
 

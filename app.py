@@ -176,5 +176,31 @@ def recipe_detail():
         return "Recipe not found", 404
 
 
+@app.route("/save_recipe", methods=["POST"])
+def save_recipe():
+    try:
+        data = request.get_json()
+        title = data.get('title')
+        instructions = data.get('instructions')
+        category = data.get('category')
+        date_of_meal = data.get('date_of_meal')
+
+        if not title or not instructions or not category or not date_of_meal:
+            return jsonify({"error": "Missing recipe data"}), 400
+
+        sql = "INSERT INTO recipe (name, instructions, category, date_of_meal) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (title, instructions, category, date_of_meal))
+        db.commit()
+
+        return jsonify({"message": "Recipe saved successfully!"}), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error saving recipe: {err}") # Print the detailed MySQL error
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True)

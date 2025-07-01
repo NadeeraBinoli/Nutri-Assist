@@ -6,6 +6,94 @@ document.addEventListener('DOMContentLoaded', () => {
     suggestionContainer.id = 'suggestion-container';
     recipeGrid.parentNode.insertBefore(suggestionContainer, recipeGrid);
 
+    // Modal elements
+    const saveRecipeModal = document.getElementById('saveRecipeModal');
+    const closeButton = document.querySelector('.close-button');
+    const saveRecipeForm = document.getElementById('saveRecipeForm');
+    const modalRecipeTitle = document.getElementById('modalRecipeTitle');
+    const modalRecipeCategory = document.getElementById('modalRecipeCategory');
+    const modalRecipeInstructions = document.getElementById('modalRecipeInstructions');
+    const modalDateOfMeal = document.getElementById('modalDateOfMeal');
+
+    // Open modal
+    recipeGrid.addEventListener('click', (event) => {
+        if (event.target.closest('.save-recipe-btn')) {
+            const button = event.target.closest('.save-recipe-btn');
+            modalRecipeTitle.value = button.dataset.title;
+            modalRecipeInstructions.value = button.dataset.instructions;
+
+            // Set min and max dates for date_of_meal input
+            const today = new Date();
+            const oneWeekLater = new Date();
+            oneWeekLater.setDate(today.getDate() + 7);
+
+            const formatDate = (date) => {
+                const yyyy = date.getFullYear();
+                const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                const dd = String(date.getDate()).padStart(2, '0');
+                return `${yyyy}-${mm}-${dd}`;
+            };
+
+            modalDateOfMeal.min = formatDate(today);
+            modalDateOfMeal.max = formatDate(oneWeekLater);
+            modalDateOfMeal.value = formatDate(today); // Optionally pre-fill with today's date
+
+            // Set the category dropdown
+            const categoryValue = button.dataset.category;
+            for (let i = 0; i < modalRecipeCategory.options.length; i++) {
+                if (modalRecipeCategory.options[i].value === categoryValue) {
+                    modalRecipeCategory.selectedIndex = i;
+                    break;
+                }
+            }
+            saveRecipeModal.style.display = 'block';
+        }
+    });
+
+    // Close modal
+    closeButton.addEventListener('click', () => {
+        saveRecipeModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == saveRecipeModal) {
+            saveRecipeModal.style.display = 'none';
+        }
+    });
+
+    // Handle form submission
+    saveRecipeForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const recipeData = {
+            title: modalRecipeTitle.value,
+            category: modalRecipeCategory.value,
+            instructions: modalRecipeInstructions.value,
+            date_of_meal: modalDateOfMeal.value,
+        };
+
+        try {
+            const response = await fetch('/save_recipe', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(recipeData),
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                saveRecipeModal.style.display = 'none';
+            } else {
+                alert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error saving recipe:', error);
+            alert('An error occurred while saving the recipe.');
+        }
+    });
+
     const fetchRecipes = async (query = '') => {
         try {
             const response = await fetch(`/api/recipes?search=${query}`);
@@ -29,6 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p><strong>Total Time:</strong> ${recipe.total_time}</p>
                             <p><strong>Calories:</strong> ${recipe.calories}</p>
                         </div>
+                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}">
+                            <i class="fa-solid fa-bookmark"></i> Save Recipe
+                        </button>
                     `;
 
                     recipeGrid.appendChild(recipeCard);
