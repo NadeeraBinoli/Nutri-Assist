@@ -83,39 +83,42 @@ def grocery():
     return render_template('grocery.html')
 
 ##############################################
-recipes = load_parsed_recipes(limit=2000)
+recipes = load_parsed_recipes(limit=200) # Reduced limit for faster loading
 
 @app.route('/recipe')
 def recipe():
-    return render_template('recipe.html')
+    return render_template('recipe.html', recipes=recipes)
 
 @app.route('/api/recipes')
 def api_recipes():
-    search_query = request.args.get('search', '').lower()
-    if search_query:
-        filtered_recipes = []
-        best_match_title = None
-        highest_score = 0
+    try:
+        search_query = request.args.get('search', '').lower()
+        if search_query:
+            filtered_recipes = []
+            best_match_title = None
+            highest_score = 0
 
-        for r in recipes:
-            title_score = fuzz.partial_ratio(search_query, r['title'].lower())
-            ingredients_score = max([fuzz.partial_ratio(search_query, i.lower()) for i in r['ingredients']]) if r['ingredients'] else 0
-            
-            if title_score > 70 or ingredients_score > 70:
-                filtered_recipes.append(r)
-            
-            # Find the best single match for suggestion
-            current_best_score = max(title_score, ingredients_score)
-            if current_best_score > highest_score:
-                highest_score = current_best_score
-                best_match_title = r['title']
+            for r in recipes:
+                title_score = fuzz.partial_ratio(search_query, r['title'].lower())
+                ingredients_score = max([fuzz.partial_ratio(search_query, i.lower()) for i in r['ingredients']]) if r['ingredients'] else 0
+                
+                if title_score > 70 or ingredients_score > 70:
+                    filtered_recipes.append(r)
+                
+                current_best_score = max(title_score, ingredients_score)
+                if current_best_score > highest_score:
+                    highest_score = current_best_score
+                    best_match_title = r['title']
 
-        response_data = {'recipes': filtered_recipes}
-        if not filtered_recipes and best_match_title and highest_score > 50: # Threshold for suggestion
-            response_data['suggestion'] = best_match_title
-        
-        return jsonify(response_data)
-    return jsonify({'recipes': recipes})
+            response_data = {'recipes': filtered_recipes}
+            if not filtered_recipes and best_match_title and highest_score > 50:
+                response_data['suggestion'] = best_match_title
+            
+            return jsonify(response_data)
+        return jsonify({'recipes': recipes})
+    except Exception as e:
+        print(f"Error in /api/recipes: {e}")
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 ##############################################
 

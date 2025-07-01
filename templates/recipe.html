@@ -55,25 +55,8 @@
                 </div>
             <div id="suggestion-container"></div>
             <div class="recipe-grid">
-                {% for recipe in recipes %}
                 <div class="recipe-card">
-                    <h3 class="recipe-title">{{ recipe.title }}</h3>
-                    <div class="recipe-details">
-                        <h4>Ingredients:</h4>
-                        <ul>
-                            {% for ingredient in recipe.ingredients %}
-                            <li>{{ ingredient }}</li>
-                            {% endfor %}
-                        </ul>
-                        <h4>Instructions:</h4>
-                        <ol>
-                            {% for instruction in recipe.instructions %}
-                            <li>{{ instruction }}</li>
-                            {% endfor %}
-                        </ol>
-                    </div>
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>
