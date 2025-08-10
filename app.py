@@ -178,18 +178,23 @@ def recipe_detail():
 
 @app.route("/save_recipe", methods=["POST"])
 def save_recipe():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized. Please log in to save recipes."}), 401
+        
     try:
+        user_id = session["user_id"]
         data = request.get_json()
         title = data.get('title')
         instructions = data.get('instructions')
         category = data.get('category')
         date_of_meal = data.get('date_of_meal')
+        image = data.get('image')
 
         if not title or not instructions or not category or not date_of_meal:
             return jsonify({"error": "Missing recipe data"}), 400
 
-        sql = "INSERT INTO recipe (name, instructions, category, date_of_meal) VALUES (%s, %s, %s, %s)"
-        cursor.execute(sql, (title, instructions, category, date_of_meal))
+        sql = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        cursor.execute(sql, (title, instructions, category, date_of_meal, user_id, image))
         db.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200

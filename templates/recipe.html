@@ -62,7 +62,7 @@
                         <p><strong>Total Time:</strong> {{ recipe.total_time }}</p>
                         <p><strong>Calories:</strong> {{ recipe.calories }}</p>
                     </div>
-                    <button class="save-recipe-btn" data-title="{{ recipe.title }}" data-instructions="{{ recipe.instructions | join('\n') }}" data-category="{{ recipe.category }}">
+                    <button class="save-recipe-btn" data-title="{{ recipe.title }}" data-instructions="{{ recipe.instructions | join('\n') }}" data-category="{{ recipe.category }}" data-image="{{ recipe.image }}">
                         <i class="fa-solid fa-bookmark"></i> Save Recipe
                     </button>
                 </div>
@@ -93,6 +93,7 @@
                 </select>
 
                 <input type="hidden" id="modalRecipeInstructions" name="instructions">
+                <input type="hidden" id="modalRecipeImage" name="image">
 
                 <label for="modalDateOfMeal">Date of Meal:</label>
                 <input type="date" id="modalDateOfMeal" name="date_of_meal" required>

@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalRecipeCategory = document.getElementById('modalRecipeCategory');
     const modalRecipeInstructions = document.getElementById('modalRecipeInstructions');
     const modalDateOfMeal = document.getElementById('modalDateOfMeal');
+    const modalRecipeImage = document.getElementById('modalRecipeImage');
 
     // Open modal
     recipeGrid.addEventListener('click', (event) => {
@@ -21,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const button = event.target.closest('.save-recipe-btn');
             modalRecipeTitle.value = button.dataset.title;
             modalRecipeInstructions.value = button.dataset.instructions;
+            modalRecipeImage.value = button.dataset.image; // Set the hidden image input
 
             // Set min and max dates for date_of_meal input
             const today = new Date();
@@ -70,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             category: modalRecipeCategory.value,
             instructions: modalRecipeInstructions.value,
             date_of_meal: modalDateOfMeal.value,
+            image: modalRecipeImage.value,
         };
 
         try {
@@ -117,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p><strong>Total Time:</strong> ${recipe.total_time}</p>
                             <p><strong>Calories:</strong> ${recipe.calories}</p>
                         </div>
-                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}">
+                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}" data-image="${recipe.image}">
                             <i class="fa-solid fa-bookmark"></i> Save Recipe
                         </button>
                     `;
