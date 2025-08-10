@@ -123,6 +123,44 @@ def calculate_bmi():
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
+@dashboard_bp.route('/get_saved_meals', methods=['GET'])
+def get_saved_meals():
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+    user_id = session["user_id"]
+    
+    try:
+        query = "SELECT name, instructions, category, date_of_meal, image_url FROM recipe WHERE userID = %s ORDER BY date_of_meal, category"
+        cursor.execute(query, (user_id,))
+        saved_meals_raw = cursor.fetchall()
+
+        meals_by_date = {}
+        for meal in saved_meals_raw:
+            name, instructions, category, date_of_meal, image_url = meal
+            date_str = date_of_meal.strftime('%Y-%m-%d') # Format date to YYYY-MM-DD
+
+            if date_str not in meals_by_date:
+                meals_by_date[date_str] = {}
+            if category not in meals_by_date[date_str]:
+                meals_by_date[date_str][category] = []
+            
+            meals_by_date[date_str][category].append({
+                'name': name,
+                'instructions': instructions,
+                'category': category,
+                'image_url': image_url
+            })
+        
+        return jsonify(meals_by_date), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error fetching saved meals: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+
 # updating with the old one 
 
 # @dashboard_bp.route('/save_user_preferences', methods=['POST'])

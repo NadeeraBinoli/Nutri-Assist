@@ -483,3 +483,128 @@ a.logo{
     display: flex;
     align-content: center;
 }
+
+.mealInfo .mealImage {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Modal Styles */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+    background-color: var(--dark-black);
+    margin: 10% auto; 
+    padding: 30px; /* Increased padding */
+    border: 1px solid var(--dim-gray); /* Softer border */
+    width: 80%; 
+    max-width: 700px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.modal-content h2 {
+    font-family: var(--primary-font); /* Use primary font for header */
+    color: var(--mantis-light-green); /* Use accent color */
+    margin-bottom: 20px;
+}
+
+.modal .close-button {
+    color: var(--panache-white);
+    position: absolute; /* Better positioning */
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.modal .close-button:hover,
+.modal .close-button:focus {
+    color: var(--dim-gray);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Style the search bar inside the modal */
+.modal .search-bar {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.modal .search-bar input {
+    flex-grow: 1; /* Allow input to take up available space */
+    padding: 10px;
+    border: 1px solid var(--panache-white);
+    border-radius: 5px 0 0 5px;
+    background-color: var(--nero-black);
+    color: var(--panache-white);
+    font-size: 16px;
+}
+
+.modal .search-bar button {
+    padding: 10px 15px;
+    border: none;
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Add styles for the search results inside the modal */
+#modal-search-results {
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#modal-search-results .recipe-card {
+    background-color: var(--nero-black);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#modal-search-results .recipe-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+#modal-search-results .recipe-title {
+    font-size: 18px;
+    color: var(--mantis-light-green);
+}
+
+#modal-search-results .save-btn {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: auto; /* Pushes the button to the far right */
+    font-weight: bold; /* Added bold */
+}
+
+#modal-search-results .save-btn:hover {
+    opacity: 0.9;
+}
