@@ -1,10 +1,10 @@
 // JavaScript to toggle between Day/Week buttons
-document.getElementById('day-btn').addEventListener('click', function() {
+document.getElementById('day-btn').addEventListener('click', function(){
     document.getElementById('day-btn').classList.add('active');
     document.getElementById('week-btn').classList.remove('active');
 });
 
-document.getElementById('week-btn').addEventListener('click', function() {
+document.getElementById('week-btn').addEventListener('click', function(){
     document.getElementById('week-btn').classList.add('active');
     document.getElementById('day-btn').classList.remove('active');
 });
@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <h4 class="mealName">${meal.name}</h4>
                                 <p class="mealSize">1 Serving</p>
                             </div>
+                            <i class="fa-solid fa-trash delete-meal-btn" data-recipe-id="${meal.id}"></i>
                         `;
                         container.insertBefore(mealInfoDiv, addButton);
                     });
@@ -149,7 +150,15 @@ document.addEventListener('DOMContentLoaded', () => {
             loadMeals();
         }
     });
+
+    // Event delegation for delete buttons
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('delete-meal-btn')) {
+            deleteMeal(e.target);
+        }
+    });
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- MODAL LOGIC ---
@@ -206,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = document.createElement('div');
                     card.className = 'recipe-card';
                     card.innerHTML = `
-                        <img src="${recipe.image || '../static/images/placeholder.jpg'}" alt="${recipe.title}" class="recipe-image">
+                        <img src="${recipe.image || '../static/images/placeholder.jpg'}" alt="${recipe.title}">
                         <div class="recipe-details">
                             <h4 class="recipe-title">${recipe.title}</h4>
                             <p><strong>Calories:</strong> ${recipe.calories || 'N/A'}</p>
@@ -400,4 +409,36 @@ function showCustomAlert(message) {
     alertDialogOkBtn.addEventListener('click', closeAlert);
     closeButton.addEventListener('click', closeAlert);
     window.addEventListener('click', outsideClickListener);
+}
+
+async function deleteMeal(element) {
+    const recipeId = element.dataset.recipeId;
+    const mealInfoDiv = element.closest('.mealInfo');
+
+    const userConfirmed = await showCustomConfirm('Are you sure you want to delete this meal?');
+    if (!userConfirmed) {
+        return; // User cancelled
+    }
+
+    try {
+        const response = await fetch('/dashboard/delete_meal', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ recipe_id: recipeId }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showCustomAlert(result.message);
+            mealInfoDiv.remove(); // Remove the meal from the UI
+        } else {
+            showCustomAlert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error deleting meal:', error);
+        showCustomAlert('An unexpected error occurred while deleting the meal.');
+    }
 }

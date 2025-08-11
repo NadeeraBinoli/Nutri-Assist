@@ -121,13 +121,13 @@ def get_saved_meals():
     cursor = conn.cursor()
     
     try:
-        query = "SELECT name, instructions, category, date_of_meal, image_url FROM recipe WHERE userID = %s ORDER BY date_of_meal, category"
+        query = "SELECT recipeID, name, instructions, category, date_of_meal, image_url FROM recipe WHERE userID = %s ORDER BY date_of_meal, category"
         cursor.execute(query, (user_id,))
         saved_meals_raw = cursor.fetchall()
 
         meals_by_date = {}
         for meal in saved_meals_raw:
-            name, instructions, category, date_of_meal, image_url = meal
+            recipe_id, name, instructions, category, date_of_meal, image_url = meal
             date_str = date_of_meal.strftime('%Y-%m-%d') # Format date to YYYY-MM-DD
 
             if date_str not in meals_by_date:
@@ -136,6 +136,7 @@ def get_saved_meals():
                 meals_by_date[date_str][category] = []
             
             meals_by_date[date_str][category].append({
+                'id': recipe_id,
                 'name': name,
                 'instructions': instructions,
                 'category': category,
@@ -231,6 +232,45 @@ def clear_foods():
 
     except mysql.connector.Error as err:
         print(f"MySQL Error clearing foods: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@dashboard_bp.route('/delete_meal', methods=['POST'])
+def delete_meal():
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+    user_id = session["user_id"]
+    data = request.json
+    recipe_id = data.get('recipe_id')
+
+    if not recipe_id:
+        return jsonify({'status': 'error', 'message': 'Recipe ID is required'}), 400
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        delete_query = "DELETE FROM recipe WHERE recipeID = %s AND userID = %s"
+        cursor.execute(delete_query, (recipe_id, user_id))
+        connection.commit()
+
+        if cursor.rowcount > 0:
+            return jsonify({'status': 'success', 'message': 'Meal deleted successfully!'}), 200
+        else:
+            return jsonify({'status': 'info', 'message': 'Meal not found or already deleted.'}), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error deleting meal: {err}")
         return jsonify({"error": "Database error, please try again later."}), 500
     except Exception as e:
         print(f"An unexpected error occurred: {e}")

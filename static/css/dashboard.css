@@ -392,13 +392,17 @@ a.logo{
 .loadButton:hover,
 .loadButton i:hover,
 .generate-btn i:hover,
-.generate-btn:hover  {
+.generate-btn:hover {
     color: var(--mantis-light-green);
     border-color: var(--mantis-light-green);
 }
 
-.fa-arrow-rotate-right{
+.fa-arrow-rotate-right,.fa-trash{
     cursor: pointer;
+}
+
+.fa-trash:hover {
+    color: #ff1643;
 }
 
 /* Show dropdown on button hover */
@@ -582,7 +586,7 @@ a.logo{
     gap: 15px;
 }
 
-#modal-search-results .recipe-image {
+#modal-search-results .recipe-card img {
     width: 80px;
     height: 80px;
     object-fit: cover;
