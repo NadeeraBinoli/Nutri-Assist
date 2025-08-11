@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalRecipeTitle.value = button.dataset.title;
             modalRecipeInstructions.value = button.dataset.instructions;
             modalRecipeImage.value = button.dataset.image; // Set the hidden image input
+            modalRecipeIngredients.value = button.dataset.ingredients; // Set the hidden ingredients input
 
             // Set min and max dates for date_of_meal input
             const today = new Date();
@@ -73,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             instructions: modalRecipeInstructions.value,
             date_of_meal: modalDateOfMeal.value,
             image: modalRecipeImage.value,
+            ingredients: JSON.parse(modalRecipeIngredients.value), // Include ingredients
         };
 
         try {
@@ -120,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p><strong>Total Time:</strong> ${recipe.total_time}</p>
                             <p><strong>Calories:</strong> ${recipe.calories}</p>
                         </div>
-                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}" data-image="${recipe.image}">
+                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}" data-image="${recipe.image}" data-ingredients="${JSON.stringify(recipe.ingredients)}">
                             <i class="fa-solid fa-bookmark"></i> Save Recipe
                         </button>
                     `;

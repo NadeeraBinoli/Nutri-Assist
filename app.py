@@ -218,6 +218,34 @@ def save_recipe():
             cursor.execute(nutritional_sql, (recipe_id, calories, protein, fat, carbs))
             connection.commit()
 
+        # Insert into nutritionalinfo table
+        if recipe_id:
+            nutritional_sql = "INSERT INTO nutritionalinfo (recipeID, calories, protein, fats, carbs) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(nutritional_sql, (recipe_id, calories, protein, fat, carbs))
+            connection.commit()
+
+        # Extract and save ingredients
+        ingredients_list = data.get('ingredients', [])
+        if ingredients_list and isinstance(ingredients_list, list):
+            ingredient_sql = "INSERT INTO recipeingredients (recipeID, ingredient, amount) VALUES (%s, %s, %s)"
+            for item in ingredients_list:
+                ingredient_name = item
+                amount = None
+                # Simple parsing for "amount ingredient" format
+                match = re.match(r'(\d+\.?\d*\s*(?:[a-zA-Z]+\.?\s*)?)(.*)', item.strip())
+                if match:
+                    amount = match.group(1).strip()
+                    ingredient_name = match.group(2).strip()
+                
+                try:
+                    cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount))
+                except mysql.connector.Error as err:
+                    print(f"MySQL Error inserting ingredient: {err}") # Detailed error print
+                    # Optionally, you might want to rollback here or handle this error differently
+                    # connection.rollback() 
+                    # return jsonify({"error": "Database error during ingredient insertion."}), 500
+            connection.commit()
+
         return jsonify({"message": "Recipe saved successfully!"}), 200
 
     except mysql.connector.Error as err:

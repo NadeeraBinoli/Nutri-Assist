@@ -277,7 +277,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 data-calories="${recipe.calories || ''}"
                                 data-protein="${recipe.protein_g || ''}"
                                 data-fat="${recipe.fat_g || ''}"
-                                data-carbs="${recipe.carbohydrates_g || ''}">
+                                data-carbs="${recipe.carbohydrates_g || ''}"
+                                data-ingredients="${escape(JSON.stringify(recipe.ingredients))}">
                             Save
                         </button>
                     `;
@@ -318,7 +319,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 calories: saveButton.dataset.calories,
                 protein: saveButton.dataset.protein,
                 fat: saveButton.dataset.fat,
-                carbs: saveButton.dataset.carbs
+                carbs: saveButton.dataset.carbs,
+                ingredients: JSON.parse(unescape(saveButton.dataset.ingredients)) // Add ingredients
             };
 
             try {
