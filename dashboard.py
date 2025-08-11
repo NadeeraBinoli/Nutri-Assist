@@ -151,8 +151,11 @@ def get_saved_meals():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
-    cursor.close()
-    conn.close()
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
 
 # updating with the old one 
 

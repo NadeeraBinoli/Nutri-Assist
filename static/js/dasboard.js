@@ -44,67 +44,104 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
-// load more button
-
-
-document.addEventListener("DOMContentLoaded", function () {
-    const loadButton = document.querySelector(".loadButton");
-    const mealOptions = document.querySelector(".meal-options-hidden");
-
-    loadButton.addEventListener("click", function () {
-        if (mealOptions.style.display === "none" || mealOptions.style.display === "") {
-            mealOptions.style.display = "block"; // Show the div
-            loadButton.innerHTML = 'Show Less <i class="fa-solid fa-angle-up"></i>'; // Change text
-        } else {
-            mealOptions.style.display = "none"; // Hide the div
-            loadButton.innerHTML = 'Load More <i class="fa-solid fa-angle-down"></i>'; // Revert text
-        }
-    });
-});
-
-
-// Current date
-document.addEventListener("DOMContentLoaded", function () {
-    function formatDate(offset) {
-        const date = new Date();
-        date.setDate(date.getDate() + offset); 
-        const options = { month: "short", day: "2-digit", weekday: "long" };
-        return date.toLocaleDateString("en-US", options);
-    }
-
-    document.querySelectorAll(".date-info").forEach((dateInfo) => {
-        const heading = dateInfo.querySelector("h3");
-        const paragraph = dateInfo.querySelector("p");
-
-        if (paragraph.textContent.includes("Tomorrow")) {
-            heading.textContent = formatDate(1); // Tomorrow's date
-        } else {
-            heading.textContent = formatDate(0); // Today's date
-        }
-    });
-});
-
 document.addEventListener('DOMContentLoaded', () => {
+    const mealWeekContainer = document.getElementById('meal-week-container');
+    const loadButton = document.querySelector(".loadButton");
+
+    const renderWeek = () => {
+        const today = new Date();
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            const dateStr = date.toISOString().split('T')[0];
+            const dayName = i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : date.toLocaleDateString("en-US", { weekday: 'long' });
+
+            const mealDayDiv = document.createElement('div');
+            mealDayDiv.className = 'mealDay';
+            if (i > 0) {
+                mealDayDiv.classList.add('hidden-day');
+            }
+            mealDayDiv.id = `meal-day-${dateStr}`;
+            mealDayDiv.innerHTML = `
+                <div class="date-info">
+                    <h3>${date.toLocaleDateString("en-US", { month: "short", day: "2-digit", weekday: "long" })}</h3>
+                    <p>${dayName} <span class="dailyCalorie">1000 kcl </span> <i class="fa-solid fa-fire"></i></p>
+                </div>
+                <div class="meal-options" id="meals-${dateStr}">
+                    <div class="meal-item" data-category="Breakfast">
+                        <div class="meal-item-head">
+                            <h4>Breakfast</h4>
+                            <i class="fa-solid fa-arrow-rotate-right"></i>
+                            <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                    <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
+                    </div>
+                    <div class="meal-item" data-category="Lunch">
+                        <div class="meal-item-head">
+                            <h4>Lunch</h4>
+                            <i class="fa-solid fa-arrow-rotate-right"></i>
+                            <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                    <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
+                    </div>
+                    <div class="meal-item" data-category="Dinner">
+                        <div class="meal-item-head">
+                            <h4>Dinner</h4>
+                            <i class="fa-solid fa-arrow-rotate-right"></i>
+                            <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                    <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
+                    </div>
+                    <div class="meal-item" data-category="Snack">
+                        <div class="meal-item-head">
+                            <h4>Snack</h4>
+                            <i class="fa-solid fa-arrow-rotate-right"></i>
+                            <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
+                            <div class="dropdown-menu">
+                                <ul>
+                                    <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                    <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <button class="add-more-btn"><i class="fa-solid fa-plus"></i> Add Food</button>
+                    </div>
+                </div>
+            `;
+            mealWeekContainer.appendChild(mealDayDiv);
+        }
+    };
+
     const loadMeals = async () => {
+        renderWeek();
         const response = await fetch('/dashboard/get_saved_meals');
         const mealsByDate = await response.json();
 
-        const today = new Date();
-        const tomorrow = new Date();
-        tomorrow.setDate(today.getDate() + 1);
-
-        const todayStr = today.toISOString().split('T')[0];
-        const tomorrowStr = tomorrow.toISOString().split('T')[0];
-
-        const options = { month: "short", day: "2-digit", weekday: "long" };
-        const todayHeading = document.getElementById('today-date-heading');
-        const tomorrowHeading = document.getElementById('tomorrow-date-heading');
-        if(todayHeading) todayHeading.textContent = today.toLocaleDateString("en-US", options);
-        if(tomorrowHeading) tomorrowHeading.textContent = tomorrow.toLocaleDateString("en-US", options);
-
-        populateDay(mealsByDate[todayStr], 'today-meals');
-        populateDay(mealsByDate[tomorrowStr], 'tomorrow-meals');
+        for (const dateStr in mealsByDate) {
+            populateDay(mealsByDate[dateStr], `meals-${dateStr}`);
+        }
     };
 
     const populateDay = (meals, containerId) => {
@@ -113,10 +150,10 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const category in meals) {
             const mealItems = meals[category];
             const container = document.querySelector(`#${containerId} [data-category="${category}"]`);
-            
+
             if (container && mealItems.length > 0) {
-                const addButton = container.querySelector('.add-more-btn'); 
-                
+                const addButton = container.querySelector('.add-more-btn');
+
                 if (addButton) {
                     mealItems.forEach(meal => {
                         const mealInfoDiv = document.createElement('div');
@@ -140,6 +177,21 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.mealInfo').forEach(el => el.remove());
     };
 
+    if (loadButton) {
+        loadButton.addEventListener("click", function () {
+            const hiddenDays = document.querySelectorAll(".hidden-day");
+            hiddenDays.forEach(day => {
+                day.style.display = (day.style.display === "none" || day.style.display === "") ? "block" : "none";
+            });
+
+            if (loadButton.textContent.includes("Load More")) {
+                loadButton.innerHTML = 'Show Less <i class="fa-solid fa-angle-up"></i>'; // Change text
+            } else {
+                loadButton.innerHTML = 'Load More <i class="fa-solid fa-angle-down"></i>'; // Revert text
+            }
+        });
+    }
+
     // Initial load
     loadMeals();
 
@@ -157,6 +209,13 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteMeal(e.target);
         }
     });
+
+    // Event delegation for add food buttons
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('add-more-btn')) {
+            openModal(e);
+        }
+    });
 });
 
 
@@ -171,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentAddButton = null; // To keep track of which "Add Food" button was clicked
 
     // Function to open the modal
-    const openModal = (e) => {
+    window.openModal = (e) => {
         currentAddButton = e.target.closest('.add-more-btn');
         modal.style.display = 'block';
     };
@@ -182,11 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
         searchResultsContainer.innerHTML = ''; // Clear results
         searchInput.value = ''; // Clear search input
     };
-
-    // Attach event listeners to all "Add Food" buttons
-    document.querySelectorAll('.add-more-btn').forEach(btn => {
-        btn.addEventListener('click', openModal);
-    });
 
     // Listeners for closing the modal
     closeModalBtn.addEventListener('click', closeModal);
@@ -220,9 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <h4 class="recipe-title">${recipe.title}</h4>
                             <p><strong>Calories:</strong> ${recipe.calories || 'N/A'}</p>
                         </div>
-                        <button class="save-btn" 
-                                data-title="${escape(recipe.title)}" 
-                                data-instructions="${escape(recipe.instructions.join('\n'))}" 
+                        <button class="save-btn"
+                                data-title="${escape(recipe.title)}"
+                                data-instructions="${escape(recipe.instructions.join('\n'))}"
                                 data-image="${recipe.image}">
                             Save
                         </button>
@@ -253,9 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const mealDayContainer = currentAddButton.closest('.mealDay');
 
             const category = mealItemContainer.dataset.category;
-            const dateStr = mealDayContainer.id.includes('today') 
-                ? new Date().toISOString().split('T')[0]
-                : new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
+            const dateStr = mealDayContainer.id.replace('meal-day-', '');
 
             const recipeData = {
                 title: unescape(saveButton.dataset.title),
@@ -285,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                     `;
                     mealItemContainer.insertBefore(mealInfoDiv, currentAddButton);
-                    
+
                     closeModal();
                 } else {
                     showCustomAlert('Error: ' + result.error);
@@ -303,18 +355,9 @@ async function clearFoods(element) {
     const mealDay = element.closest('.mealDay');
 
     const category = mealItem.dataset.category;
-    const day = mealDay.id.includes('today') ? 'today' : 'tomorrow';
+    const dateToClear = mealDay.id.replace('meal-day-', '');
 
-    let dateToClear;
-    if (day === 'today') {
-        dateToClear = new Date().toISOString().split('T')[0];
-    } else {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        dateToClear = tomorrow.toISOString().split('T')[0];
-    }
-
-    const userConfirmed = await showCustomConfirm(`Are you sure you want to clear all foods for ${category} on ${day}?`);
+    const userConfirmed = await showCustomConfirm(`Are you sure you want to clear all foods for ${category} on ${dateToClear}?`);
     if (!userConfirmed) {
         return; // User cancelled
     }
@@ -443,7 +486,7 @@ async function deleteMeal(element) {
     }
 }
 
-// --- COPY FOODS MODAL --- //
+// --- COPY FOODS MODAL ---
 let currentCopyElement = null;
 
 function openCopyFoodsModal(element) {
@@ -509,12 +552,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const mealItem = currentCopyElement.closest('.meal-item');
         const mealDay = currentCopyElement.closest('.mealDay');
         const category = mealItem.dataset.category;
-        const fromDate = mealDay.id.includes('today') 
-            ? new Date().toISOString().split('T')[0]
-            : new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
+        const fromDate = mealDay.id.replace('meal-day-', '');
 
         const toDate = selectedDay.dataset.date;
-        
+
         try {
             const response = await fetch('/dashboard/copy_foods', {
                 method: 'POST',
@@ -532,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error copying foods:', error);
             showCustomAlert('An unexpected error occurred.');
         }
-        
+
 
         closeModal();
     });
