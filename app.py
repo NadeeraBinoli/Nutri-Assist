@@ -196,12 +196,27 @@ def save_recipe():
         date_of_meal = data.get('date_of_meal')
         image = data.get('image')
 
+        # Extract nutritional info
+        calories = data.get('calories')
+        protein = data.get('protein')
+        fat = data.get('fat')
+        carbs = data.get('carbs')
+
         if not title or not instructions or not category or not date_of_meal:
             return jsonify({"error": "Missing recipe data"}), 400
 
+        # Insert into recipe table
         sql = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (title, instructions, category, date_of_meal, user_id, image))
         connection.commit()
+
+        recipe_id = cursor.lastrowid # Get the ID of the newly inserted recipe
+
+        # Insert into nutritionalinfo table
+        if recipe_id:
+            nutritional_sql = "INSERT INTO nutritionalinfo (recipeID, calories, protein, fats, carbs) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(nutritional_sql, (recipe_id, calories, protein, fat, carbs))
+            connection.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200
 

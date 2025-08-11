@@ -273,7 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="save-btn"
                                 data-title="${escape(recipe.title)}"
                                 data-instructions="${escape(recipe.instructions.join('\n'))}"
-                                data-image="${recipe.image}">
+                                data-image="${recipe.image}"
+                                data-calories="${recipe.calories || ''}"
+                                data-protein="${recipe.protein_g || ''}"
+                                data-fat="${recipe.fat_g || ''}"
+                                data-carbs="${recipe.carbohydrates_g || ''}">
                             Save
                         </button>
                     `;
@@ -310,7 +314,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 instructions: unescape(saveButton.dataset.instructions),
                 image: saveButton.dataset.image,
                 category: category,
-                date_of_meal: dateStr
+                date_of_meal: dateStr,
+                calories: saveButton.dataset.calories,
+                protein: saveButton.dataset.protein,
+                fat: saveButton.dataset.fat,
+                carbs: saveButton.dataset.carbs
             };
 
             try {
