@@ -9,14 +9,14 @@ document.getElementById('week-btn').addEventListener('click', function(){
     document.getElementById('day-btn').classList.remove('active');
 });
 
-// JavaScript to handle dropdown menu
+// JavaScript to handle dropdown menu (using event delegation)
 document.addEventListener("DOMContentLoaded", function () {
-    const optionsBtns = document.querySelectorAll(".options-btn");
+    document.addEventListener("click", function (event) {
+        const clickedBtn = event.target.closest(".options-btn");
 
-    optionsBtns.forEach((btn) => {
-        btn.addEventListener("click", function (event) {
+        if (clickedBtn) {
             event.stopPropagation();
-            const dropdownMenu = this.nextElementSibling;
+            const dropdownMenu = clickedBtn.nextElementSibling;
 
             document.querySelectorAll(".dropdown-menu").forEach((menu) => {
                 if (menu !== dropdownMenu) {
@@ -26,13 +26,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dropdownMenu.style.display =
                 dropdownMenu.style.display === "block" ? "none" : "block";
-        });
-    });
-
-    document.addEventListener("click", function (event) {
-        document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-            menu.style.display = "none";
-        });
+        } else {
+            document.querySelectorAll(".dropdown-menu").forEach((menu) => {
+                menu.style.display = "none";
+            });
+        }
     });
 
     document.querySelectorAll(".dropdown-menu").forEach((menu) => {
@@ -46,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener('DOMContentLoaded', () => {
     const mealWeekContainer = document.getElementById('meal-week-container');
-    const loadButton = document.querySelector(".loadButton");
 
     const renderWeek = () => {
         const today = new Date();
@@ -176,21 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const clearMeals = () => {
         document.querySelectorAll('.mealInfo').forEach(el => el.remove());
     };
-
-    if (loadButton) {
-        loadButton.addEventListener("click", function () {
-            const hiddenDays = document.querySelectorAll(".hidden-day");
-            hiddenDays.forEach(day => {
-                day.style.display = (day.style.display === "none" || day.style.display === "") ? "block" : "none";
-            });
-
-            if (loadButton.textContent.includes("Load More")) {
-                loadButton.innerHTML = 'Show Less <i class="fa-solid fa-angle-up"></i>'; // Change text
-            } else {
-                loadButton.innerHTML = 'Load More <i class="fa-solid fa-angle-down"></i>'; // Revert text
-            }
-        });
-    }
 
     // Initial load
     loadMeals();
