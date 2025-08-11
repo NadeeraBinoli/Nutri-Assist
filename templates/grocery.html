@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <link rel="stylesheet" href="../static/css/grocery.css">
+        <!-- font awesome link -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+        <!-- google fonts link -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Signika:wght@300..700&display=swap" rel="stylesheet">
+    </head>
+<body>
+    <!-- Loading Screen -->
+    <!-- <div id="loading-screen">
+        <div class="spinner"></div>
+    </div> -->
+
+    <div class="sideNavBar">
+        <div class="hamburger">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+        <a class="menu-item" href="{{ url_for('dashboard') }}"><i class="fa-solid fa-apple-whole"></i>Meal Planning</a>
+        <a class="menu-item" href="{{ url_for('healthTracker') }}"><i class="fa-solid fa-house-medical"></i>Health Tracker</a>
+        <a class="menu-item" href="{{ url_for('preference') }}"><i class="fa-solid fa-chart-pie"></i>Preference</a>
+        <a class="menu-item" id="menu-item-focused"  href="{{ url_for('grocery') }}"><i class="fa-solid fa-cart-shopping"></i>Grocery List</a>
+        <a class="menu-item" href="{{ url_for('recipe') }}"><i class="fa-solid fa-magnifying-glass"></i>Recipe Search</a>
+        <a class="menu-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i>Log Out</a>
+        <div class="logo">
+            <div class="img"></div>
+            <a class="logo" href="{{ url_for('home') }}">Nutri Assist</a>
+        </div>
+    </div>
+
+<section class="main-content">
+        <nav class="navbar">
+            <ul class="nav-links">
+                <li><a href="{{ url_for('home') }}">Home</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="{{ url_for('account') }}">My Account</a></li>
+                <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
+            </ul>
+        </nav>
+
+        <div class="mainContentDiv">
+
+            <h2>Let’s Generate Grocery List</h2>
+            <br>
+            <p>You will get a generated Grocery List for your weekly meal plan here. Once you done shopping you can update to your kitchen stock list.</p>
+        </div>
+
+        <main>
+            <section class="card">
+                <div class="card-header">
+                    <h2>Grocery List</h2>
+                    <span>Aug 10 To Aug 17 <i class="fas fa-edit"></i></span>
+                </div>
+                <div class="category">
+        <!-- <h3>Vegetables</h3> -->
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <input type="checkbox" checked>
+                    </div>
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <input type="checkbox">
+                    </div>
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <input type="checkbox">
+                    </div>
+                </div>
+            </section>
+
+            <section class="card">
+                <div class="card-header">
+                    <h2>Kitchen Stock</h2>
+                </div>
+                <div class="category">
+        <!-- <h3>Vegetables</h3> -->
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <span class="edit"><i class="fas fa-edit"></i></span>
+                    </div>
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <span class="edit"><i class="fas fa-edit"></i></span>
+                    </div>
+                    <div class="item">
+                        <img src="static\images\pancake.png" alt="Cucumber">
+                        <span class="name">Cucumber</span>
+                        <span class="qty">2.5 kg</span>
+                        <span class="edit"><i class="fas fa-edit"></i></span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- footer -->
+    <div class="copyRights">
+        <div class="divider"></div>
+        <p>© 2024 nadbcompany. All rights reserved.</p>
+    </div>
+    <script src="../static/js/darkmode.js"></script>
+    <script src="../static/js/dasboard.js"></script>
+    <script src="../static/js/grocery.js"></script>
+</body>
+</html>
