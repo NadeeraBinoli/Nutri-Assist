@@ -132,16 +132,18 @@ def subscribe():
     if not re.match(email_regex, email):
         return jsonify({"error": "Invalid email format. Please enter a valid email address."}), 400
     
+    connection = None
+    cursor = None
     try:
-        conn = get_connection()
-        cursor = conn.cursor()
+        connection = get_connection()
+        cursor = connection.cursor()
         cursor.execute("SELECT * FROM NewsletterSubscribers WHERE email = %s", (email,))
         existing_email = cursor.fetchone()
         if existing_email:
             return jsonify({"error": "This email is already subscribed."}), 400
         
         cursor.execute("INSERT INTO NewsletterSubscribers (email) VALUES (%s)", (email,))
-        conn.commit()
+        connection.commit()
 
         msg = Message("Subscription Confirmed",
                       recipients=[email])
@@ -152,8 +154,10 @@ def subscribe():
     except Exception as err:
         return jsonify({"error": str(err)}), 500
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
     
 @app.route("/recipe_detail")
@@ -179,9 +183,11 @@ def save_recipe():
     if "user_id" not in session:
         return jsonify({"error": "Unauthorized. Please log in to save recipes."}), 401
         
+    connection = None
+    cursor = None
     try:
-        conn = get_connection()
-        cursor = conn.cursor()
+        connection = get_connection()
+        cursor = connection.cursor()
         user_id = session["user_id"]
         data = request.get_json()
         title = data.get('title')
@@ -195,7 +201,7 @@ def save_recipe():
 
         sql = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (title, instructions, category, date_of_meal, user_id, image))
-        conn.commit()
+        connection.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200
 
@@ -206,8 +212,10 @@ def save_recipe():
         print(f"An unexpected error occurred: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
     finally:
-        cursor.close()
-        conn.close()
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 if __name__ == "__main__":

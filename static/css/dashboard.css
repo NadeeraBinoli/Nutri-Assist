@@ -608,3 +608,33 @@ a.logo{
 #modal-search-results .save-btn:hover {
     opacity: 0.9;
 }
+
+/* Styles for Custom Confirmation and Alert Modals */
+.confirm-buttons button,
+.alert-buttons button {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 20px 10px;
+    transition: background-color 0.3s ease;
+}
+
+.confirm-buttons button:hover,
+.alert-buttons button:hover {
+    background-color: var(--crusoe-dark-green); 
+    color: var(--mantis-light-green);
+}
+
+#confirmNoBtn {
+    background-color: #f44336;
+    color: var(--panache-white);
+}
+
+#confirmNoBtn:hover {
+    background-color: #eb6c63;
+}

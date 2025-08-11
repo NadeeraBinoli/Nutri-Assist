@@ -200,3 +200,43 @@ def get_saved_meals():
     
 #     # Return the combined data as a comma-separated string
 #     return ', '.join(combined_list)
+
+@dashboard_bp.route('/clear_foods', methods=['POST'])
+def clear_foods():
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+    user_id = session["user_id"]
+    data = request.json
+    date_to_clear = data.get('date')
+    category_to_clear = data.get('category')
+
+    if not date_to_clear or not category_to_clear:
+        return jsonify({'status': 'error', 'message': 'Date and category are required'}), 400
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        delete_query = "DELETE FROM recipe WHERE userID = %s AND date_of_meal = %s AND category = %s"
+        cursor.execute(delete_query, (user_id, date_to_clear, category_to_clear))
+        connection.commit()
+
+        if cursor.rowcount > 0:
+            return jsonify({'status': 'success', 'message': f'Foods cleared for {category_to_clear} on {date_to_clear}'}), 200
+        else:
+            return jsonify({'status': 'info', 'message': 'No foods found to clear for this category and date.'}), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error clearing foods: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()

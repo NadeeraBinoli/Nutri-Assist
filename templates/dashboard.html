@@ -67,7 +67,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -83,7 +83,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -98,7 +98,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -113,7 +113,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -136,7 +136,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -151,7 +151,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -166,7 +166,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -181,7 +181,7 @@
                                 <i class=" options-btn fa-solid fa-ellipsis-vertical"></i>
                                 <div class="dropdown-menu">
                                     <ul>
-                                        <li><a href="#"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
+                                        <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="#"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
@@ -227,6 +227,30 @@
             </div>
             <div id="modal-search-results" class="recipe-grid">
                 <!-- Search results will be injected here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="customConfirmModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Confirmation</h2>
+            <p id="confirmMessage"></p>
+            <div class="confirm-buttons">
+                <button id="confirmYesBtn">Yes</button>
+                <button id="confirmNoBtn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="customAlertDialog" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="alertDialogMessage"></p>
+            <div class="alert-buttons">
+                <button id="alertDialogOkBtn">OK</button>
             </div>
         </div>
     </div>

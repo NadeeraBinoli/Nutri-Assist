@@ -9,6 +9,7 @@ import jwt
 import datetime
 import os
 from flask import session
+from database import get_connection
 
 JWT_SECRET_KEY = 'e413e7954a58ec7b52980e80fd2925b3bcc1ac407cb1b968ea837897c4c5f397'
 JWT_RESET_KEY = 'a18eda8b3df31bb67f50479a01797ec4846f663bd5287f61025e670b9a086e64'
@@ -16,13 +17,7 @@ JWT_RESET_KEY = 'a18eda8b3df31bb67f50479a01797ec4846f663bd5287f61025e670b9a086e6
 auth = Blueprint("auth", __name__)
 
 # Database Connection
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="mealPlanner"
-)
-cursor = db.cursor()
+
 
 # Configure Flask-Mail
 mail = Mail()
@@ -53,7 +48,11 @@ def signup():
     if password != confirm_password:
         return jsonify({"error": "Passwords do not match!"}), 400
 
+    connection = None
+    cursor = None
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
         # Check if email already exists
         cursor.execute("SELECT * FROM User WHERE email = %s", (email,))
         if cursor.fetchone():
@@ -72,6 +71,11 @@ def signup():
 
     except mysql.connector.Error:
         return jsonify({"error": "Database error, please try again later!"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 
@@ -87,7 +91,11 @@ def verify_otp():
     if session[email]["otp"] != entered_otp:
         return jsonify({"error": "Invalid OTP! Please try again."}), 400
 
+    connection = None
+    cursor = None
     try:
+        connection = get_connection()
+        cursor = connection.cursor()
         # OTP verified, now save user in DB
         name = session[email]["name"]
         password = session[email]["password"]
@@ -98,12 +106,12 @@ def verify_otp():
 
         # Insert user into the database
         cursor.execute("INSERT INTO User (name, email, password) VALUES (%s, %s, %s)", (name, email, hashed_password))
-        db.commit()
+        connection.commit()
 
         # If the user opted for the newsletter, add their email
         if newsletter:
             cursor.execute("INSERT IGNORE INTO NewsletterSubscribers (email) VALUES (%s)", (email,))
-            db.commit()
+            connection.commit()
 
         # Send Welcome Email
         msg = Message("Welcome to Meal Planner!", recipients=[email])
@@ -117,12 +125,16 @@ def verify_otp():
 
     except mysql.connector.Error:
         return jsonify({"error": "Database error, please try again later!"}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 
 @auth.route("/resend_otp", methods=["POST"])
 def resend_otp():
-    cursor = db.cursor(buffered=True)
     data = request.json
     email = data.get("email")
 
@@ -151,8 +163,11 @@ def resend_otp():
 
 @auth.route("/login", methods=["POST"])
 def login():
-    cursor = db.cursor(buffered=True)
+    connection = None
+    cursor = None
     try:
+        connection = get_connection()
+        cursor = connection.cursor(buffered=True)
         data = request.json
         email = data.get("email")
         password = data.get("password")
@@ -208,46 +223,63 @@ def logout():
 
 @auth.route("/forgot_password", methods=["POST"])
 def forgot_password():
-    cursor = db.cursor(buffered=True)
-    data = request.json
-    email = data.get("email")
-    
-    if not email:
-        return jsonify({"error": "Email is required!"}), 400
-    
-    # Check if the email exists
-    cursor.execute("SELECT * FROM User WHERE email = %s", (email,))
-    user = cursor.fetchone()
-    
-    if not user:
-        return jsonify({"error": "Email not found!"}), 404
-    
-    # Generate reset token
-    reset_token = jwt.encode({
-        'email': email,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Expires in 1 hour
-    }, JWT_RESET_KEY, algorithm='HS256')
-    
-    reset_link = url_for('auth.reset_password', token=reset_token, _external=True)
-    
-    # Send Reset Email
-    msg = Message("Password Reset Request", recipients=[email])
-    msg.body = f"""Hello,
-    Click the link below to reset your password:
-        {reset_link}
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor(buffered=True)
+        
+        data = request.json
+        email = data.get("email")
+        
+        if not email:
+            return jsonify({"error": "Email is required!"}), 400
+        
+        # Check if the email exists
+        cursor.execute("SELECT * FROM User WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        
+        if not user:
+            return jsonify({"error": "Email not found!"}), 404
+        
+        # Generate reset token
+        reset_token = jwt.encode({
+            'email': email,
+            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)  # Expires in 1 hour
+        }, JWT_RESET_KEY, algorithm='HS256')
+        
+        reset_link = url_for('auth.reset_password', token=reset_token, _external=True)
+        
+        # Send Reset Email
+        msg = Message("Password Reset Request", recipients=[email])
+        msg.body = f"""Hello,
+Click the link below to reset your password:
+    {reset_link}
 
-    If you did not request a password reset, please ignore this email.
+If you did not request a password reset, please ignore this email.
 
-    Best Regards,
-    Meal Planner Team"""
+Best Regards,
+Meal Planner Team"""
 
-    mail.send(msg)
+        mail.send(msg)
 
-    return jsonify({"message": "Password reset link has been sent to your email."}), 200
+        return jsonify({"message": "Password reset link has been sent to your email."}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
 
 @auth.route("/update-email", methods=["POST"])
 def update_email():
-    cursor = db.cursor(buffered=True)
+    connection = None
+    cursor = None
     if "user_id" not in session:
         return jsonify({"success": False, "message": "User not logged in."}), 401
 
@@ -263,9 +295,11 @@ def update_email():
     user_id = session["user_id"]
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor(buffered=True)
         # Update email in the database
         cursor.execute("UPDATE user SET email = %s WHERE userId = %s", (new_email, user_id))
-        db.commit()
+        connection.commit()
 
         # Fetch the updated email from the database
         cursor.execute("SELECT email FROM user WHERE userId = %s", (user_id,))
@@ -273,7 +307,7 @@ def update_email():
 
         # Update session with the new email
         session["user_email"]= updated_email
-        session.modified = True  # 🔥 This forces Flask to recognize session changes
+        session.modified = True  # This forces Flask to recognize session changes
 
         return jsonify({"success": True, "new_email": updated_email})
     
@@ -286,16 +320,19 @@ def update_email():
 
 @auth.route("/delete-account", methods=["POST"])
 def delete_account():
-    cursor = db.cursor(buffered=True)
+    connection = None
+    cursor = None
     if "user_id" not in session:
         return jsonify({"success": False, "message": "User not logged in."}), 401
 
     user_id = session["user_id"]
 
     try:
+        connection = get_connection()
+        cursor = connection.cursor(buffered=True)
         # Delete user from the database
         cursor.execute("DELETE FROM user WHERE userId = %s", (user_id,))
-        db.commit()
+        connection.commit()
 
         # Clear session to log the user out
         session.clear()

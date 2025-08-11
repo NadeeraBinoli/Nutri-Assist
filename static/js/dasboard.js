@@ -279,12 +279,125 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     closeModal();
                 } else {
-                    alert('Error: ' + result.error);
+                    showCustomAlert('Error: ' + result.error);
                 }
             } catch (error) {
                 console.error('Error saving recipe:', error);
-                alert('An unexpected error occurred while saving.');
+                showCustomAlert('An unexpected error occurred while saving.');
             }
         }
     });
 });
+
+async function clearFoods(element) {
+    const mealItem = element.closest('.meal-item');
+    const mealDay = element.closest('.mealDay');
+
+    const category = mealItem.dataset.category;
+    const day = mealDay.id.includes('today') ? 'today' : 'tomorrow';
+
+    let dateToClear;
+    if (day === 'today') {
+        dateToClear = new Date().toISOString().split('T')[0];
+    } else {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateToClear = tomorrow.toISOString().split('T')[0];
+    }
+
+    const userConfirmed = await showCustomConfirm(`Are you sure you want to clear all foods for ${category} on ${day}?`);
+    if (!userConfirmed) {
+        return; // User cancelled
+    }
+
+    try {
+                const response = await fetch('/dashboard/clear_foods', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ date: dateToClear, category: category }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showCustomAlert(result.message);
+            // Remove the mealInfo divs for the cleared category
+            const mealInfoDivs = mealItem.querySelectorAll('.mealInfo');
+            mealInfoDivs.forEach(div => div.remove());
+        } else {
+            showCustomAlert('Error: ' + result.error);
+        }
+    } catch (error) {
+        console.error('Error clearing foods:', error);
+        showCustomAlert('An unexpected error occurred while clearing foods.');
+    }
+}
+
+function showCustomConfirm(message) {
+    return new Promise((resolve) => {
+        const modal = document.getElementById('customConfirmModal');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmYesBtn = document.getElementById('confirmYesBtn');
+        const confirmNoBtn = document.getElementById('confirmNoBtn');
+        const closeButton = modal.querySelector('.close-button');
+
+        confirmMessage.textContent = message;
+        modal.style.display = 'block';
+
+        const onYesClick = () => {
+            modal.style.display = 'none';
+            confirmYesBtn.removeEventListener('click', onYesClick);
+            confirmNoBtn.removeEventListener('click', onNoClick);
+            closeButton.removeEventListener('click', onNoClick);
+            resolve(true);
+        };
+
+        const onNoClick = () => {
+            modal.style.display = 'none';
+            confirmYesBtn.removeEventListener('click', onYesClick);
+            confirmNoBtn.removeEventListener('click', onNoClick);
+            closeButton.removeEventListener('click', onNoClick);
+            resolve(false);
+        };
+
+        confirmYesBtn.addEventListener('click', onYesClick);
+        confirmNoBtn.addEventListener('click', onNoClick);
+        closeButton.addEventListener('click', onNoClick); // Allow closing with X button
+
+        // Close if clicked outside the modal content
+        window.addEventListener('click', function(event) {
+            if (event.target == modal) {
+                onNoClick(); // Treat outside click as "No"
+            }
+        });
+    });
+}
+
+function showCustomAlert(message) {
+    const modal = document.getElementById('customAlertDialog');
+    const alertDialogMessage = document.getElementById('alertDialogMessage');
+    const alertDialogOkBtn = document.getElementById('alertDialogOkBtn');
+    const closeButton = modal.querySelector('.close-button');
+
+    alertDialogMessage.textContent = message;
+    modal.style.display = 'block';
+
+    const closeAlert = () => {
+        modal.style.display = 'none';
+        alertDialogOkBtn.removeEventListener('click', closeAlert);
+        closeButton.removeEventListener('click', closeAlert);
+        window.removeEventListener('click', outsideClickListener);
+    };
+
+    const outsideClickListener = (event) => {
+        if (event.target == modal) {
+            closeAlert();
+        }
+    };
+
+    alertDialogOkBtn.addEventListener('click', closeAlert);
+    closeButton.addEventListener('click', closeAlert);
+    window.addEventListener('click', outsideClickListener);
+}
