@@ -2,11 +2,25 @@
 document.getElementById('day-btn').addEventListener('click', function(){
     document.getElementById('day-btn').classList.add('active');
     document.getElementById('week-btn').classList.remove('active');
+
+    const mealDayDivs = document.querySelectorAll('.mealDay');
+    mealDayDivs.forEach((div, index) => {
+        if (index === 0) {
+            div.style.display = 'block';
+        } else {
+            div.style.display = 'none';
+        }
+    });
 });
 
 document.getElementById('week-btn').addEventListener('click', function(){
     document.getElementById('week-btn').classList.add('active');
     document.getElementById('day-btn').classList.remove('active');
+
+    const mealDayDivs = document.querySelectorAll('.mealDay');
+    mealDayDivs.forEach(div => {
+        div.style.display = 'block';
+    });
 });
 
 // JavaScript to handle dropdown menu (using event delegation)
@@ -55,9 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const mealDayDiv = document.createElement('div');
             mealDayDiv.className = 'mealDay';
-            if (i > 0) {
-                mealDayDiv.classList.add('hidden-day');
-            }
             mealDayDiv.id = `meal-day-${dateStr}`;
             mealDayDiv.innerHTML = `
                 <div class="date-info">
@@ -74,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <ul>
                                     <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                     <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
-                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    <li><a href="${preferenceUrl}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -89,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <ul>
                                     <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                     <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
-                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    <li><a href="${preferenceUrl}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -104,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <ul>
                                     <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                     <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
-                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    <li><a href="${preferenceUrl}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -119,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <ul>
                                     <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
                                     <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
-                                    <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
+                                    <li><a href="${preferenceUrl}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -176,6 +187,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial load
     loadMeals();
+
+    // Ensure initial view is 'Week'
+    document.getElementById('week-btn').click();
 
     // Handle back/forward cache
     window.addEventListener('pageshow', function(event) {

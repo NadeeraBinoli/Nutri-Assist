@@ -420,7 +420,7 @@ a.logo{
     margin-right: 1rem;
 }
 
-.meal-options-hidden{
+.mealDay.hidden-day {
     display: none;
 }
 
