@@ -389,8 +389,6 @@ a.logo{
 .add-more-btn i:hover,
 .options-btn:hover,
 .fa-arrow-rotate-right:hover,
-.loadButton:hover,
-.loadButton i:hover,
 .generate-btn i:hover,
 .generate-btn:hover {
     color: var(--mantis-light-green);
@@ -410,7 +408,7 @@ a.logo{
     display: block;
 }
 
-.loadButton,.generate-btn{
+.generate-btn{
     border: 1px solid var(--panache-white);
     background-color: var(--nero-black);
     padding: .5rem;
@@ -419,19 +417,18 @@ a.logo{
     cursor: pointer;
 }
 
-.loadButton i,.generate-btn i{
+.generate-btn i{
     font-size: 1rem;
     padding: 5px;
     margin-right: 1rem;
 }
 
-.loadDiv{
-    display: flex;
-    justify-content: center;
-    margin: 2rem;
+.meal-options-hidden{
+    display: none;
 }
 
-.meal-options-hidden{
+/* Day/Week View Toggle */
+.meal-week-container.day-view-active .mealDay.hidden-day {
     display: none;
 }
 

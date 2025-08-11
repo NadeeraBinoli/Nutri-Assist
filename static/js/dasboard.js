@@ -11,42 +11,47 @@ document.getElementById('week-btn').addEventListener('click', function(){
 
 // JavaScript to handle dropdown menu
 document.addEventListener("DOMContentLoaded", function () {
-    const optionsBtns = document.querySelectorAll(".options-btn");
+    // Event delegation for dropdown menu
+    document.addEventListener("click", function (event) {    
+        const clickedBtn = event.target.closest(".options-btn"); 
 
-    optionsBtns.forEach((btn) => {
-        btn.addEventListener("click", function (event) {
-            event.stopPropagation();
-            const dropdownMenu = this.nextElementSibling;
+    // If an options button was clicked  
+    if (clickedBtn) {             
+        event.stopPropagation(); // Prevent document click from immediately closing     
+        const dropdownMenu = clickedBtn.nextElementSibling; 
+        // Close all other dropdowns      
 
             document.querySelectorAll(".dropdown-menu").forEach((menu) => {
                 if (menu !== dropdownMenu) {
                     menu.style.display = "none";
                 }
             });
+            // Toggle the clicked dropdown
 
             dropdownMenu.style.display =
                 dropdownMenu.style.display === "block" ? "none" : "block";
-        });
-    });
 
-    document.addEventListener("click", function (event) {
+    } else {  
+        // If click is outside any options button, close all dropdowns  
         document.querySelectorAll(".dropdown-menu").forEach((menu) => {
             menu.style.display = "none";
         });
+    }
     });
 
-    document.querySelectorAll(".dropdown-menu").forEach((menu) => {
-        menu.addEventListener("click", function (event) {
+    // Prevent clicks inside dropdown from closing it   
+    document.addEventListener("click", function (event) {  
+        if (event.target.closest(".dropdown-menu")) {     
             event.stopPropagation();
+        }
         });
     });
-});
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const dayBtn = document.getElementById('day-btn');
+    const weekBtn = document.getElementById('week-btn');
     const mealWeekContainer = document.getElementById('meal-week-container');
-    const loadButton = document.querySelector(".loadButton");
 
     const renderWeek = () => {
         const today = new Date();
@@ -177,23 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.mealInfo').forEach(el => el.remove());
     };
 
-    if (loadButton) {
-        loadButton.addEventListener("click", function () {
-            const hiddenDays = document.querySelectorAll(".hidden-day");
-            hiddenDays.forEach(day => {
-                day.style.display = (day.style.display === "none" || day.style.display === "") ? "block" : "none";
-            });
-
-            if (loadButton.textContent.includes("Load More")) {
-                loadButton.innerHTML = 'Show Less <i class="fa-solid fa-angle-up"></i>'; // Change text
-            } else {
-                loadButton.innerHTML = 'Load More <i class="fa-solid fa-angle-down"></i>'; // Revert text
-            }
-        });
-    }
-
-    // Initial load
-    loadMeals();
+    dayBtn.addEventListener('click', showDayOnly);
+    weekBtn.addEventListener('click', showWeek);
 
     // Handle back/forward cache
     window.addEventListener('pageshow', function(event) {
