@@ -280,3 +280,53 @@ def delete_meal():
             cursor.close()
         if connection:
             connection.close()
+
+@dashboard_bp.route('/copy_foods', methods=['POST'])
+def copy_foods():
+    if "user_id" not in session:
+        return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
+
+    user_id = session["user_id"]
+    data = request.json
+    from_date = data.get('fromDate')
+    to_date = data.get('toDate')
+    category = data.get('category')
+
+    if not from_date or not to_date or not category:
+        return jsonify({'status': 'error', 'message': 'Missing required data'}), 400
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        # Fetch meals from the source date
+        fetch_query = "SELECT name, instructions, category, image_url FROM recipe WHERE userID = %s AND date_of_meal = %s AND category = %s"
+        cursor.execute(fetch_query, (user_id, from_date, category))
+        meals_to_copy = cursor.fetchall()
+
+        if not meals_to_copy:
+            return jsonify({'status': 'info', 'message': 'No meals found to copy.'}), 200
+
+        # Insert meals into the destination date
+        insert_query = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        for meal in meals_to_copy:
+            name, instructions, category, image_url = meal
+            cursor.execute(insert_query, (name, instructions, category, to_date, user_id, image_url))
+        
+        connection.commit()
+
+        return jsonify({'status': 'success', 'message': f'Meals from {category} on {from_date} have been copied to {to_date}.'}), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error copying foods: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()

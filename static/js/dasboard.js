@@ -442,3 +442,98 @@ async function deleteMeal(element) {
         showCustomAlert('An unexpected error occurred while deleting the meal.');
     }
 }
+
+// --- COPY FOODS MODAL --- //
+let currentCopyElement = null;
+
+function openCopyFoodsModal(element) {
+    currentCopyElement = element;
+    const modal = document.getElementById('copyFoodsModal');
+    const daysContainer = document.getElementById('next-week-days');
+    daysContainer.innerHTML = ''; // Clear previous days
+
+    const today = new Date();
+    for (let i = 1; i <= 7; i++) {
+        const nextDay = new Date(today);
+        nextDay.setDate(today.getDate() + i);
+        const dayOption = document.createElement('div');
+        dayOption.classList.add('day-option');
+        dayOption.dataset.date = nextDay.toISOString().split('T')[0];
+        dayOption.textContent = nextDay.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+        daysContainer.appendChild(dayOption);
+    }
+
+    modal.style.display = 'block';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('copyFoodsModal');
+    if (!modal) return;
+
+    const closeModalBtn = modal.querySelector('.close-button');
+    const cancelBtn = document.getElementById('cancelCopyBtn');
+    const form = document.getElementById('copyFoodsForm');
+    const daysContainer = document.getElementById('next-week-days');
+
+    const closeModal = () => {
+        modal.style.display = 'none';
+    };
+
+    closeModalBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target == modal) {
+            closeModal();
+        }
+    });
+
+    daysContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('day-option')) {
+            // Allow multiple selections if needed, for now single selection
+            const selected = daysContainer.querySelector('.selected');
+            if (selected) {
+                selected.classList.remove('selected');
+            }
+            e.target.classList.add('selected');
+        }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const selectedDay = daysContainer.querySelector('.selected');
+        if (!selectedDay) {
+            showCustomAlert('Please select a day to copy the meals to.');
+            return;
+        }
+
+        const mealItem = currentCopyElement.closest('.meal-item');
+        const mealDay = currentCopyElement.closest('.mealDay');
+        const category = mealItem.dataset.category;
+        const fromDate = mealDay.id.includes('today') 
+            ? new Date().toISOString().split('T')[0]
+            : new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0];
+
+        const toDate = selectedDay.dataset.date;
+        
+        try {
+            const response = await fetch('/dashboard/copy_foods', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fromDate, toDate, category })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                showCustomAlert(result.message);
+                closeModal();
+            } else {
+                showCustomAlert('Error: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error copying foods:', error);
+            showCustomAlert('An unexpected error occurred.');
+        }
+        
+
+        closeModal();
+    });
+});

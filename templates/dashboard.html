@@ -68,7 +68,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>  
@@ -84,7 +84,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>  
@@ -99,7 +99,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -114,7 +114,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -137,7 +137,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -152,7 +152,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -167,7 +167,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -182,7 +182,7 @@
                                 <div class="dropdown-menu">
                                     <ul>
                                         <li><a href="#" onclick="clearFoods(this)"><i class="fa-regular fa-circle-xmark"></i> Clear Foods</a></li>
-                                        <li><a href="#"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
+                                        <li><a href="#" onclick="openCopyFoodsModal(this)"><i class="fa-regular fa-copy"></i> Copy Foods</a></li>
                                         <li><a href="{{ url_for('preference') }}"><i class="fa-regular fa-pen-to-square"></i> Edit Preferences</a></li>
                                     </ul>
                                 </div>                                  
@@ -252,6 +252,24 @@
             <div class="alert-buttons">
                 <button id="alertDialogOkBtn">OK</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Copy Foods Modal -->
+    <div id="copyFoodsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Copy Foods to Another Day</h2>
+            <form id="copyFoodsForm">
+                <p>Select a day within the week to copy these meals to.</p>
+                <div id="next-week-days" class="days-container">
+                    <!-- Days will be populated by JavaScript -->
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Copy</button>
+                    <button type="button" class="btn-secondary" id="cancelCopyBtn">Cancel</button>
+                </div>
+            </form>
         </div>
     </div>
 

@@ -614,8 +614,8 @@ a.logo{
 }
 
 /* Styles for Custom Confirmation and Alert Modals */
-.confirm-buttons button,
-.alert-buttons button {
+#copyFoodsModal .btn-primary,.confirm-buttons button,
+.alert-buttons button, #copyFoodsModal .btn-primary,#copyFoodsModal .btn-secondary {
     background-color: var(--mantis-light-green);
     color: var(--crusoe-dark-green);
     border: none;
@@ -629,16 +629,53 @@ a.logo{
 }
 
 .confirm-buttons button:hover,
-.alert-buttons button:hover {
+.alert-buttons button:hover,
+#copyFoodsModal .btn-primary:hover {
     background-color: var(--crusoe-dark-green); 
     color: var(--mantis-light-green);
 }
 
-#confirmNoBtn {
+#copyFoodsModal .btn-secondary , #confirmNoBtn {
     background-color: #f44336;
     color: var(--panache-white);
 }
 
-#confirmNoBtn:hover {
+#copyFoodsModal .btn-secondary:hover, #confirmNoBtn:hover {
     background-color: #eb6c63;
+}
+
+/* Styles for Copy Foods Modal */
+#copyFoodsModal .days-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+#copyFoodsModal .day-option {
+    background-color: var(--nero-black);
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid var(--dim-gray);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+#copyFoodsModal .day-option:hover {
+    background-color: var(--crusoe-dark-green);
+    border-color: var(--mantis-light-green);
+}
+
+#copyFoodsModal .day-option.selected {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border-color: var(--mantis-light-green);
+    font-weight: bold;
+}
+
+#copyFoodsModal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }
