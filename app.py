@@ -6,6 +6,7 @@ from auth import auth
 from dashboard import dashboard_bp
 from recipe import load_parsed_recipes
 from fuzzywuzzy import fuzz
+from database import get_connection 
 
 app = Flask(__name__)
 app.secret_key = "1e9ac1d030f2c0b496c6dd6aeb30424b"
@@ -18,14 +19,6 @@ app.config['MAIL_PASSWORD'] = 'zden vlhw inos vbbx'
 app.config['MAIL_DEFAULT_SENDER'] = 'bababablackship1999@gmail.com'
 
 mail = Mail(app)
-
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="mealPlanner"
-)
-cursor = db.cursor()
 
 app.register_blueprint(auth)
 app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
@@ -140,13 +133,15 @@ def subscribe():
         return jsonify({"error": "Invalid email format. Please enter a valid email address."}), 400
     
     try:
+        conn = get_connection()
+        cursor = conn.cursor()
         cursor.execute("SELECT * FROM NewsletterSubscribers WHERE email = %s", (email,))
         existing_email = cursor.fetchone()
         if existing_email:
             return jsonify({"error": "This email is already subscribed."}), 400
         
         cursor.execute("INSERT INTO NewsletterSubscribers (email) VALUES (%s)", (email,))
-        db.commit()
+        conn.commit()
 
         msg = Message("Subscription Confirmed",
                       recipients=[email])
@@ -154,9 +149,12 @@ def subscribe():
         mail.send(msg)
 
         return jsonify({"message": "Subscribed successfully! Confirmation email sent."}), 200
+    except Exception as err:
+        return jsonify({"error": str(err)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-    except mysql.connector.Error as err:
-        return jsonify({"error": "Database error, please try again later."}), 500
     
 @app.route("/recipe_detail")
 def recipe_detail():
@@ -182,6 +180,8 @@ def save_recipe():
         return jsonify({"error": "Unauthorized. Please log in to save recipes."}), 401
         
     try:
+        conn = get_connection()
+        cursor = conn.cursor()
         user_id = session["user_id"]
         data = request.get_json()
         title = data.get('title')
@@ -195,7 +195,7 @@ def save_recipe():
 
         sql = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
         cursor.execute(sql, (title, instructions, category, date_of_meal, user_id, image))
-        db.commit()
+        conn.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200
 
@@ -205,6 +205,9 @@ def save_recipe():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
 
 if __name__ == "__main__":

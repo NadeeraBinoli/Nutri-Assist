@@ -1,37 +1,15 @@
 from flask import Blueprint, request, jsonify, session
+from database import get_connection 
 import mysql.connector
 
 # Create a Blueprint for the dashboard-related routes
 dashboard_bp = Blueprint('dashboard', __name__)
-
-# Connect to MySQL database
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="mealPlanner"
-)
-cursor = db.cursor()
-
-# Route for saving user preferences
-from flask import Blueprint, request, jsonify, session
-import mysql.connector
-
-# Create a Blueprint for the dashboard-related routes
-dashboard_bp = Blueprint('dashboard', __name__)
-
-# Connect to MySQL database
-db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="mealPlanner"
-)
-cursor = db.cursor()
 
 # Route for saving user preferences
 @dashboard_bp.route('/save_user_preferences', methods=['POST'])
 def save_user_preferences():
+    conn = get_connection()
+    cursor = conn.cursor()
     # Check if the user is logged in by verifying session
     if "user_id" not in session:
         return jsonify({'status': 'error', 'message': 'User not logged in'})
@@ -53,7 +31,7 @@ def save_user_preferences():
             VALUES (%s, '', '', '', '', '')
         """
         cursor.execute(insert_query, (user_id,))
-        db.commit()
+        conn.commit()
 
     # Now update the record with actual user preferences
     update_query = """
@@ -63,14 +41,15 @@ def save_user_preferences():
         WHERE userID = %s
     """
     values = (data['dietPlan'], data['foodTypes'], data['allergies'], 
-              data['medicalConditions'], data['mealFrequency'], user_id)
+            data['medicalConditions'], data['mealFrequency'], user_id)
 
     cursor.execute(update_query, values)
-    db.commit()
+    conn.commit()
 
     # Return success message
     return jsonify({'status': 'success', 'message': 'Preferences saved successfully!'})
-
+    cursor.close()
+    conn.close()
 
 
 @dashboard_bp.route('/get_user_preferences', methods=['GET'])
@@ -80,6 +59,8 @@ def get_user_preferences():
         return jsonify({'status': 'error', 'message': 'User not logged in'})
 
     user_id = session["user_id"]
+    conn = get_connection()
+    cursor = conn.cursor()
 
     query = """
         SELECT dietPlan, foodTypes, allergies, medicalConditions, mealFrequency 
@@ -99,6 +80,8 @@ def get_user_preferences():
         })
     else:
         return jsonify({'status': 'error', 'message': 'No preferences found'})
+    cursor.close()
+    conn.close()
     
 
 @dashboard_bp.route('/calculate_bmi', methods=['POST'])
@@ -108,7 +91,10 @@ def calculate_bmi():
         height = float(data['height'])
         weight = float(data['weight'])
         bmi = float(data['bmi'])
-        user_id = 1  # Replace with actual user ID from session/auth system
+        user_id = session.get("user_id", 1) 
+        
+        conn = get_connection()
+        cursor = conn.cursor()
 
         # Store BMI data in the database
         query = """
@@ -117,11 +103,13 @@ def calculate_bmi():
         """
         values = (user_id, weight, height, bmi)
         cursor.execute(query, values)
-        db.commit()
+        conn.commit()
 
         return jsonify({"message": "BMI stored successfully", "bmi": bmi}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+    cursor.close()
+    conn.close()
 
 @dashboard_bp.route('/get_saved_meals', methods=['GET'])
 def get_saved_meals():
@@ -129,6 +117,8 @@ def get_saved_meals():
         return jsonify({'status': 'error', 'message': 'User not logged in'}), 401
 
     user_id = session["user_id"]
+    conn = get_connection()
+    cursor = conn.cursor()
     
     try:
         query = "SELECT name, instructions, category, date_of_meal, image_url FROM recipe WHERE userID = %s ORDER BY date_of_meal, category"
@@ -160,6 +150,8 @@ def get_saved_meals():
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
+    cursor.close()
+    conn.close()
 
 # updating with the old one 
 
