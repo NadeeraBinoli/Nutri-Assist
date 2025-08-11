@@ -240,10 +240,7 @@ def save_recipe():
                 try:
                     cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount))
                 except mysql.connector.Error as err:
-                    print(f"MySQL Error inserting ingredient: {err}") # Detailed error print
-                    # Optionally, you might want to rollback here or handle this error differently
-                    # connection.rollback() 
-                    # return jsonify({"error": "Database error during ingredient insertion."}), 500
+                    print(f"MySQL Error inserting ingredient: {err}")
             connection.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200
