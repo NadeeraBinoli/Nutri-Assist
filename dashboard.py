@@ -144,12 +144,7 @@ def update_health_metrics():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-@dashboard_bp.route('/get_health_profile', methods=['GET'])
-def get_health_profile():
-    if "user_id" not in session:
-        return jsonify({"error": "User not logged in"}), 401
-
-    user_id = session["user_id"]
+def _get_health_profile_data(user_id):
     conn = get_connection()
     cursor = conn.cursor(dictionary=True)
 
@@ -165,16 +160,56 @@ def get_health_profile():
         cursor.execute(query, (user_id,))
         health_profile = cursor.fetchone()
 
-        cursor.close()
-        conn.close()
+        # Calculate consumed calories for today
+        today = datetime.date.today()
+        consumed_calories_query = """
+            SELECT SUM(ni.calories) AS total_calories
+            FROM recipe r
+            JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
+            WHERE r.userID = %s AND r.date_of_meal = %s
+        """
+        cursor.execute(consumed_calories_query, (user_id, today))
+        consumed_calories_result = cursor.fetchone()
+        consumed_calories = consumed_calories_result['total_calories'] if consumed_calories_result and consumed_calories_result['total_calories'] is not None else 0
+
+        # Calculate consumed protein, fats, and carbs for today
+        consumed_macros_query = """
+            SELECT SUM(ni.protein) AS total_protein, SUM(ni.fats) AS total_fats, SUM(ni.carbs) AS total_carbs
+            FROM recipe r
+            JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
+            WHERE r.userID = %s AND r.date_of_meal = %s
+        """
+        cursor.execute(consumed_macros_query, (user_id, today))
+        consumed_macros_result = cursor.fetchone()
+
+        consumed_protein = consumed_macros_result['total_protein'] if consumed_macros_result and consumed_macros_result['total_protein'] is not None else 0
+        consumed_fats = consumed_macros_result['total_fats'] if consumed_macros_result and consumed_macros_result['total_fats'] is not None else 0
+        consumed_carbs = consumed_macros_result['total_carbs'] if consumed_macros_result and consumed_macros_result['total_carbs'] is not None else 0
 
         if health_profile:
-            return jsonify(health_profile), 200
+            health_profile['consumed_calories'] = consumed_calories
+            health_profile['consumed_protein'] = consumed_protein
+            health_profile['consumed_fats'] = consumed_fats
+            health_profile['consumed_carbs'] = consumed_carbs
+            return health_profile
         else:
-            return jsonify(None), 200
+            return {'consumed_calories': consumed_calories, 'consumed_protein': consumed_protein, 'consumed_fats': consumed_fats, 'consumed_carbs': consumed_carbs}
+    finally:
+        if cursor:
+            cursor.close()
+        if conn:
+            conn.close()
+
+@dashboard_bp.route('/get_health_profile', methods=['GET'])
+def get_health_profile():
+    if "user_id" not in session:
+        return jsonify({"error": "User not logged in"}), 401
+
+    user_id = session["user_id"]
+    try:
+        health_profile_data = _get_health_profile_data(user_id)
+        return jsonify(health_profile_data), 200
     except Exception as e:
-        cursor.close()
-        conn.close()
         return jsonify({"error": str(e)}), 500
 
 @dashboard_bp.route('/log_water_intake', methods=['POST'])

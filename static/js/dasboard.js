@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mealDayDiv.innerHTML = `
                 <div class="date-info">
                     <h3>${date.toLocaleDateString("en-US", { month: "short", day: "2-digit", weekday: "long" })}</h3>
-                    <p>${dayName} <span class="dailyCalorie">1000 kcl </span> <i class="fa-solid fa-fire"></i></p>
+                    <p>${dayName} <span class="dailyCalorie">${healthProfile.consumed_calories !== undefined ? healthProfile.consumed_calories : '0'} kcl </span> <i class="fa-solid fa-fire"></i></p>
                 </div>
                 <div class="meal-options" id="meals-${dateStr}">
                     <div class="meal-item" data-category="Breakfast">

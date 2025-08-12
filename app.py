@@ -3,7 +3,7 @@ import mysql.connector
 from flask_mail import Mail, Message
 import re
 from auth import auth
-from dashboard import dashboard_bp
+from dashboard import dashboard_bp, _get_health_profile_data
 from recipe import load_parsed_recipes
 from fuzzywuzzy import fuzz
 from database import get_connection 
@@ -40,7 +40,10 @@ def login_page():
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login_page"))
-    return render_template("dashboard.html", user_name=session.get("user_name"))
+    
+    health_profile_data = _get_health_profile_data(session["user_id"])
+
+    return render_template("dashboard.html", user_name=session.get("user_name"), health_profile=health_profile_data)
 
 @app.route("/forgot_password", methods=["POST"])
 def forgot_password():
@@ -57,7 +60,10 @@ def preference():
 def healthTracker():
     if "user_id" not in session:
         return redirect(url_for("login_page"))
-    return render_template("healthTracker.html", user_name=session.get("user_name"))
+    
+    health_profile_data = _get_health_profile_data(session["user_id"])
+
+    return render_template("healthTracker.html", user_name=session.get("user_name"), health_profile=health_profile_data)
 
 @app.route('/grocery')
 def grocery():
@@ -211,12 +217,6 @@ def save_recipe():
         connection.commit()
 
         recipe_id = cursor.lastrowid # Get the ID of the newly inserted recipe
-
-        # Insert into nutritionalinfo table
-        if recipe_id:
-            nutritional_sql = "INSERT INTO nutritionalinfo (recipeID, calories, protein, fats, carbs) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(nutritional_sql, (recipe_id, calories, protein, fat, carbs))
-            connection.commit()
 
         # Insert into nutritionalinfo table
         if recipe_id:

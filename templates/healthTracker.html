@@ -126,7 +126,7 @@
             <!-- Day/Week Toggle -->
             <div class="toggle-buttons">
                 <button class="active" id="day-btn">Day</button>
-                <button id="week-btn">Week</button>
+                <!-- <button id="week-btn">Week</button> -->
             </div>
         
             <!-- Water Intake Progress -->
@@ -157,35 +157,35 @@
             <!-- Day/Week Toggle -->
             <div class="toggle-buttons">
                 <button class="active" id="day-btn">Day</button>
-                <button id="week-btn">Week</button>
+                <!-- <button id="week-btn">Week</button> -->
             </div>
         
             <!-- Calorie Meter -->
             <div class="calorie-meter">
-                <p>1721 Kcal of 2213 kcal</p>
+                <p><span id="consumed-calories">{{ health_profile.consumed_calories | default(0) }}</span> Kcal of <span id="calorie-limit">{{ health_profile.calorieIntakeLimit | default(0) }}</span> kcal</p>
                 <div class="meter">
-                    <div id="calorie-progress" style="width: 78%"></div>
+                    <div id="calorie-progress" style="width: {{ ((health_profile.consumed_calories | default(0)) / (health_profile.calorieIntakeLimit | default(1))) * 100 }}%"></div>
                 </div>
             </div>
         
             <!-- Nutritional Breakdown -->
             <div class="nutrition-breakdown">
                 <div class="macro">
-                    <p>Protein</p>
+                    <p>Protein: <span id="consumed-protein">{{ health_profile.consumed_protein | default(0) }}</span>g / <span id="target-protein">{{ health_profile.proteins_g | default(0) }}</span>g</p>
                     <div class="progress-bar">
-                        <div id="protein-progress" style="width: 75%"></div>
+                        <div id="protein-progress" style="width: {{ ((health_profile.consumed_protein | default(0)) / (health_profile.proteins_g | default(1))) * 100 }}%"></div>
                     </div>
                 </div>
                 <div class="macro">
-                    <p>Fats</p>
+                    <p>Fats: <span id="consumed-fats">{{ health_profile.consumed_fats | default(0) }}</span>g / <span id="target-fats">{{ health_profile.fats_g | default(0) }}</span>g</p>
                     <div class="progress-bar">
-                        <div id="fats-progress" style="width: 80%"></div>
+                        <div id="fats-progress" style="width: {{ ((health_profile.consumed_fats | default(0)) / (health_profile.fats_g | default(1))) * 100 }}%"></div>
                     </div>
                 </div>
                 <div class="macro">
-                    <p>Carbs</p>
+                    <p>Carbs: <span id="consumed-carbs">{{ health_profile.consumed_carbs | default(0) }}</span>g / <span id="target-carbs">{{ health_profile.carbs_g | default(0) }}</span>g</p>
                     <div class="progress-bar">
-                        <div id="carbs-progress" style="width: 87%"></div>
+                        <div id="carbs-progress" style="width: {{ ((health_profile.consumed_carbs | default(0)) / (health_profile.carbs_g | default(1))) * 100 }}%"></div>
                     </div>
                 </div>
             </div>
