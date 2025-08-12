@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, session
 from database import get_connection 
 import mysql.connector
+import datetime
 
 # Create a Blueprint for the dashboard-related routes
 dashboard_bp = Blueprint('dashboard', __name__)
@@ -84,32 +85,98 @@ def get_user_preferences():
     conn.close()
     
 
-@dashboard_bp.route('/calculate_bmi', methods=['POST'])
-def calculate_bmi():
+@dashboard_bp.route('/update_health_metrics', methods=['POST'])
+def update_health_metrics():
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "User not logged in"}), 401
+
     try:
         data = request.json
-        height = float(data['height'])
-        weight = float(data['weight'])
-        bmi = float(data['bmi'])
-        user_id = session.get("user_id", 1) 
+        user_id = session["user_id"]
         
         conn = get_connection()
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
 
-        # Store BMI data in the database
-        query = """
-            INSERT INTO HealthProfile (userID, weight, height, bmi) 
-            VALUES (%s, %s, %s, %s)
-        """
-        values = (user_id, weight, height, bmi)
+        # Check if a health profile already exists for the user
+        cursor.execute("SELECT healthPID FROM HealthProfile WHERE userID = %s", (user_id,))
+        result = cursor.fetchone()
+
+        if result:
+            # Update existing profile
+            query = """
+                UPDATE HealthProfile 
+                SET weight = %s, height = %s, bmi = %s, calorieIntakeLimit = %s, 
+                    carbs_g = %s, fats_g = %s, proteins_g = %s, age = %s, gender = %s, activity = %s
+                WHERE userID = %s
+            """
+            values = (data['weight'], data['height'], data['bmi'], data['calorieIntakeLimit'],
+                      data['carbs_g'], data['fats_g'], data['proteins_g'], data['age'], data['gender'], data['activity'], user_id)
+        else:
+            # Insert new profile
+            query = """
+                INSERT INTO HealthProfile (userID, weight, height, bmi, calorieIntakeLimit, carbs_g, fats_g, proteins_g, age, gender, activity) 
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            """
+            values = (user_id, data['weight'], data['height'], data['bmi'], data['calorieIntakeLimit'],
+                      data['carbs_g'], data['fats_g'], data['proteins_g'], data['age'], data['gender'], data['activity'])
+        
         cursor.execute(query, values)
+
+        # Update water intake for today
+        today = datetime.date.today()
+        cursor.execute("SELECT id FROM water_intake WHERE userId = %s AND date = %s", (user_id, today))
+        water_record = cursor.fetchone()
+        if water_record:
+            water_query = "UPDATE water_intake SET water_target = %s WHERE id = %s"
+            water_values = (data['water_target'], water_record['id'])
+        else:
+            water_query = "INSERT INTO water_intake (userId, date, water_target) VALUES (%s, %s, %s)"
+            water_values = (user_id, today, data['water_target'])
+        
+        cursor.execute(water_query, water_values)
+
         conn.commit()
 
-        return jsonify({"message": "BMI stored successfully", "bmi": bmi}), 200
+        cursor.close()
+        conn.close()
+
+        return jsonify({"status": "success", "message": "Health profile updated successfully", "data": data}), 200
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
-    cursor.close()
-    conn.close()
+        return jsonify({"status": "error", "message": str(e)}), 400
+
+@dashboard_bp.route('/get_health_profile', methods=['GET'])
+def get_health_profile():
+    if "user_id" not in session:
+        return jsonify({"error": "User not logged in"}), 401
+
+    user_id = session["user_id"]
+    conn = get_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        query = """
+            SELECT hp.weight, hp.height, hp.bmi, hp.calorieIntakeLimit, hp.carbs_g, hp.fats_g, hp.proteins_g, hp.age, hp.gender, hp.activity, wi.water_target
+            FROM HealthProfile hp
+            LEFT JOIN water_intake wi ON hp.userID = wi.userId AND wi.date = CURDATE()
+            WHERE hp.userID = %s 
+            ORDER BY hp.lastUpdated DESC 
+            LIMIT 1
+        """
+        cursor.execute(query, (user_id,))
+        health_profile = cursor.fetchone()
+
+        cursor.close()
+        conn.close()
+
+        if health_profile:
+            return jsonify(health_profile), 200
+        else:
+            return jsonify(None), 200
+    except Exception as e:
+        cursor.close()
+        conn.close()
+        return jsonify({"error": str(e)}), 500
+
 
 @dashboard_bp.route('/get_saved_meals', methods=['GET'])
 def get_saved_meals():
@@ -307,7 +374,7 @@ def copy_foods():
         # Fetch meals from the source date
         fetch_query = "SELECT name, instructions, category, image_url FROM recipe WHERE userID = %s AND date_of_meal = %s AND category = %s"
         cursor.execute(fetch_query, (user_id, from_date, category))
-        meals_to_copy = cursor.fetchall()
+        meals_to_.copy = cursor.fetchall()
 
         if not meals_to_copy:
             return jsonify({'status': 'info', 'message': 'No meals found to copy.'}), 200
