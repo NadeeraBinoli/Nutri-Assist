@@ -145,6 +145,10 @@ function getHealthProfile() {
                 document.getElementById('gender').value = data.gender;
                 document.getElementById('activity').value = data.activity;
                 updateHealthUI(data);
+                // Initialize water tracker with DB data
+                const waterTargetEl = document.querySelector(".waterTarget");
+                if(waterTargetEl) waterTargetEl.textContent = `${data.water_target || '2.5'}L`;
+                updateWaterTracker(data.drank_amount || 0);
             }
         })
         .catch(error => {
@@ -152,60 +156,46 @@ function getHealthProfile() {
         });
 }
 
+function logWaterIntake(amount) {
+    fetch('/dashboard/log_water_intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amount })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            updateWaterTracker(data.new_drank_amount);
+        } else {
+            alert('Error logging water: ' + data.message);
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
 // This part handles the water drinking log, keeping it separate from the profile calculation
 document.addEventListener("DOMContentLoaded", function () {
-    const drinkedWaterEl = document.querySelector(".drinkedWater");
-    const waterTargetEl = document.querySelector(".waterTarget");
-    const waterIntakeBar = document.querySelector(".waterIntakeBar");
-    const logContainer = document.querySelector(".drink-log");
     const plusIcon = document.querySelector(".fa-circle-plus");
     const minusIcon = document.querySelector(".fa-circle-minus");
 
-    let drinkedWater = parseFloat(localStorage.getItem("drinkedWater")) || 0;
-    let drinkLog = JSON.parse(localStorage.getItem("drinkLog")) || [];
-
-    function updateWaterTracker() {
-        let waterTarget = parseFloat(waterTargetEl.textContent) || 2.5;
-        drinkedWaterEl.textContent = drinkedWater.toFixed(1) + "L";
-        
-        const progressPercentage = (drinkedWater / waterTarget) * 100;
-        waterIntakeBar.style.height = progressPercentage + "%";
-
-        logContainer.innerHTML = "";
-        drinkLog.forEach((entry) => {
-            const logEntry = document.createElement("div");
-            logEntry.classList.add("log-entry");
-            logEntry.innerHTML = `<span>${entry.amount} ml</span> <span>${entry.time}</span>`;
-            logContainer.appendChild(logEntry);
-        });
-
-        localStorage.setItem("drinkedWater", drinkedWater);
-        localStorage.setItem("drinkLog", JSON.stringify(drinkLog));
-    }
-
     if(plusIcon) {
-        plusIcon.addEventListener("click", function () {
-            let waterTarget = parseFloat(waterTargetEl.textContent) || 2.5;
-            if (drinkedWater < waterTarget) {
-                drinkedWater += 0.5;
-                const now = new Date();
-                const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-                drinkLog.push({ amount: "500", time });
-                updateWaterTracker();
-            }
-        });
+        plusIcon.addEventListener("click", () => logWaterIntake(0.5)); // Add 500ml
     }
 
     if(minusIcon){
-        minusIcon.addEventListener("click", function () {
-            if (drinkedWater > 0) {
-                drinkedWater -= 0.5;
-                drinkLog.pop();
-                updateWaterTracker();
-            }
-        });
+        minusIcon.addEventListener("click", () => logWaterIntake(-0.5)); // Remove 500ml
     }
-    
-    updateWaterTracker();
 });
+
+function updateWaterTracker(drinkedWater) {
+    const drinkedWaterEl = document.querySelector(".drinkedWater");
+    const waterTargetEl = document.querySelector(".waterTarget");
+    const waterIntakeBar = document.querySelector(".waterIntakeBar");
+
+    let waterTarget = parseFloat(waterTargetEl.textContent) || 2.5;
+    drinkedWaterEl.textContent = drinkedWater.toFixed(1) + "L";
+    
+    const progressPercentage = (drinkedWater / waterTarget) * 100;
+    waterIntakeBar.style.height = progressPercentage + "%";
+}
 

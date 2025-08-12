@@ -155,7 +155,7 @@ def get_health_profile():
 
     try:
         query = """
-            SELECT hp.weight, hp.height, hp.bmi, hp.calorieIntakeLimit, hp.carbs_g, hp.fats_g, hp.proteins_g, hp.age, hp.gender, hp.activity, wi.water_target
+            SELECT hp.weight, hp.height, hp.bmi, hp.calorieIntakeLimit, hp.carbs_g, hp.fats_g, hp.proteins_g, hp.age, hp.gender, hp.activity, wi.water_target, wi.drank_amount
             FROM HealthProfile hp
             LEFT JOIN water_intake wi ON hp.userID = wi.userId AND wi.date = CURDATE()
             WHERE hp.userID = %s 
@@ -176,6 +176,45 @@ def get_health_profile():
         cursor.close()
         conn.close()
         return jsonify({"error": str(e)}), 500
+
+@dashboard_bp.route('/log_water_intake', methods=['POST'])
+def log_water_intake():
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "User not logged in"}), 401
+
+    try:
+        data = request.json
+        amount = float(data.get('amount'))
+        user_id = session["user_id"]
+        today = datetime.date.today()
+
+        conn = get_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        # Find water intake record for today
+        cursor.execute("SELECT id, drank_amount FROM water_intake WHERE userId = %s AND date = %s", (user_id, today))
+        water_record = cursor.fetchone()
+
+        if water_record:
+            current_drank_amount = water_record.get('drank_amount') or 0
+            new_drank_amount = current_drank_amount + amount
+            # Ensure drank amount doesn't go below 0
+            new_drank_amount = max(0, new_drank_amount)
+            cursor.execute("UPDATE water_intake SET drank_amount = %s WHERE id = %s", (new_drank_amount, water_record['id']))
+        else:
+            # If no record for today, create one. Assumes a water_target has been set previously.
+            new_drank_amount = max(0, amount)
+            cursor.execute("INSERT INTO water_intake (userId, date, drank_amount) VALUES (%s, %s, %s)", (user_id, today, new_drank_amount))
+        
+        conn.commit()
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({"status": "success", "new_drank_amount": new_drank_amount})
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
 
 
 @dashboard_bp.route('/get_saved_meals', methods=['GET'])
