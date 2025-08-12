@@ -7,7 +7,7 @@ main {
 }
 
 .card {
-  background: #1a1a1a;
+  background: var(--dark-black);
   border-radius: 10px;
   padding: 20px;
   flex: 1;
@@ -22,7 +22,7 @@ main {
 }
 
 .card-header h2 {
-  color: #6fbf4b; /* green title */
+  color: var(--mantis-light-green); /* green title */
 }
 
 .category {
@@ -37,7 +37,7 @@ main {
 .item {
   display: flex;
   align-items: center;
-  background: #222;
+  background: var(--dark-black);
   padding: 8px;
   border-radius: 8px;
   margin-bottom: 8px;
@@ -52,7 +52,7 @@ main {
 
 .item .name {
   flex: 1;
-  color: #6fbf4b;
+  color: var(--mantis-light-green);
 }
 
 .item .qty {
@@ -143,8 +143,8 @@ main {
 }
 
 .add-btn {
-    background-color: #6fbf4b;
-    color: white;
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
     padding: 8px 15px;
     border: none;
     border-radius: 5px;
@@ -157,6 +157,7 @@ main {
 
 .add-btn i {
     font-size: 14px;
+    color: var(--crusoe-dark-green);
 }
 
 .kitchen-stock-item {
@@ -195,4 +196,22 @@ main {
 
 .kitchen-stock-item .actions button:hover {
     color: #ff3b3b;
+}
+
+#process-grocery-list-btn {
+    background-color: var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px; /* Add some space above the button */
+    transition: background-color 0.3s ease;
+}
+
+#process-grocery-list-btn:hover {
+    background-color: var(--crusoe-dark-green);
+    color: var(--mantis-light-green);
 }

@@ -452,6 +452,53 @@ def delete_kitchen_stock(item_id):
         if connection:
             connection.close()
 
+@app.route("/api/process_grocery_list", methods=["POST"])
+def process_grocery_list():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized. Please log in."}), 401
+
+    user_id = session["user_id"]
+    data = request.json
+    all_items = data.get("all_items", []) # All items currently displayed on the grocery list
+    ticked_items = data.get("ticked_items", []) # Items that were ticked
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+
+        # 1. Clear existing grocerylistitems for the user
+        cursor.execute("DELETE FROM grocerylistitems WHERE userID = %s", (user_id,))
+
+        # 2. Process items
+        for item in all_items:
+            item_name = item.get("ingredient")
+            item_amount = item.get("amount")
+
+            if item_name in ticked_items:
+                # Move to kitchen stock
+                sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (user_id, item_name, item_amount))
+            else:
+                # Move to grocery list items (if not ticked)
+                sql = "INSERT INTO grocerylistitems (userID, itemName, amount) VALUES (%s, %s, %s)"
+                cursor.execute(sql, (user_id, item_name, item_amount))
+        
+        connection.commit()
+        return jsonify({"message": "Grocery list processed successfully!"}), 200
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error processing grocery list: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

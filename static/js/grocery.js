@@ -39,12 +39,60 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="../static/images/pancake.png" alt="${item.ingredient}"> <!-- Placeholder image -->
                     <span class="name">${item.ingredient}</span>
                     <span class="qty">${item.amount}</span>
-                    <input type="checkbox">
+                    <input type="checkbox" data-ingredient="${item.ingredient}" data-amount="${item.amount}">
                 `;
                 groceryListContainer.appendChild(itemDiv);
             });
+            // Add a button to process the list
+            const processButton = document.createElement('button');
+            processButton.id = 'process-grocery-list-btn';
+            processButton.textContent = 'Process Grocery List';
+            groceryListContainer.appendChild(processButton);
+
+            processButton.addEventListener('click', processGroceryList);
+
         } else {
             groceryListContainer.innerHTML = '<p>No grocery items found for the selected period.</p>';
+        }
+    };
+
+    const processGroceryList = async () => {
+        const allItemsElements = document.querySelectorAll('.card .category .item');
+        const allItems = [];
+        const tickedItems = [];
+
+        allItemsElements.forEach(itemDiv => {
+            const checkbox = itemDiv.querySelector('input[type="checkbox"]');
+            const ingredient = checkbox.dataset.ingredient;
+            const amount = checkbox.dataset.amount;
+
+            allItems.push({ ingredient, amount });
+
+            if (checkbox.checked) {
+                tickedItems.push(ingredient);
+            }
+        });
+
+        try {
+            const response = await fetch('/api/process_grocery_list', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ all_items: allItems, ticked_items: tickedItems })
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message);
+                fetchAndRenderGroceryList(); // Refresh grocery list
+                fetchAndRenderKitchenStock(); // Refresh kitchen stock
+            } else {
+                alert('Error processing grocery list: ' + data.error);
+            }
+        } catch (error) {
+            console.error('Network error processing grocery list:', error);
+            alert('Network error. Please try again.');
         }
     };
 
@@ -175,20 +223,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial loads
     fetchAndRenderGroceryList();
     fetchAndRenderKitchenStock();
-
-    // Dark mode toggle (from dashboard.js, assuming it's needed here too)
-    document.getElementById('dark-mode-toggle').addEventListener('click', function() {
-        document.body.classList.toggle('dark-mode');
-        // Save preference to localStorage if needed
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('dark-mode', 'enabled');
-        } else {
-            localStorage.setItem('dark-mode', 'disabled');
-        }
-    });
-
-    // Apply dark mode on load
-    if (localStorage.getItem('dark-mode') === 'enabled') {
-        document.body.classList.add('dark-mode');
-    }
 });
