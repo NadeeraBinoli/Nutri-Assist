@@ -228,7 +228,7 @@ def save_recipe():
         ingredients_list = data.get('ingredients', [])
         if ingredients_list and isinstance(ingredients_list, list):
             ingredient_sql = "INSERT INTO recipeingredients (recipeID, ingredient, amount, unit, userID) VALUES (%s, %s, %s, %s, %s)"
-            grocery_list_sql = "INSERT INTO grocerylistitems (userID, itemName, amount) VALUES (%s, %s, %s)"
+            grocery_list_sql = "INSERT INTO grocerylistitems (userID, itemName, amount, recipeID) VALUES (%s, %s, %s, %s)"
 
             for item in ingredients_list:
                 ingredient_name = item.strip()
@@ -289,7 +289,7 @@ def save_recipe():
                 try:
                     cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount, unit, user_id))
                     # Also insert into grocerylistitems
-                    cursor.execute(grocery_list_sql, (user_id, ingredient_name, amount_display))
+                    cursor.execute(grocery_list_sql, (user_id, ingredient_name, amount_display, recipe_id))
                 except mysql.connector.Error as err:
                     print(f"MySQL Error inserting ingredient or grocery item: {err}")
             connection.commit()
@@ -326,7 +326,7 @@ def generate_grocery_list():
         cursor = connection.cursor(dictionary=True)
 
         # Fetch items directly from grocerylistitems table
-        query = "SELECT itemName AS ingredient, amount FROM grocerylistitems WHERE userID = %s"
+        query = "SELECT itemName AS ingredient, amount, recipeID FROM grocerylistitems WHERE userID = %s"
         cursor.execute(query, (user_id,))
         grocery_list = cursor.fetchall()
 
@@ -354,6 +354,7 @@ def add_kitchen_stock():
     data = request.json
     item_name = data.get("itemName")
     amount = data.get("amount")
+    recipe_id = data.get("recipeID", None) # Allow recipeID to be optional
 
     if not item_name:
         return jsonify({"error": "Item name is required."}), 400
@@ -363,8 +364,8 @@ def add_kitchen_stock():
     try:
         connection = get_connection()
         cursor = connection.cursor()
-        sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
-        cursor.execute(sql, (user_id, item_name, amount))
+        sql = "INSERT INTO kitchenstocklist (userID, itemName, amount, recipeID) VALUES (%s, %s, %s, %s)"
+        cursor.execute(sql, (user_id, item_name, amount, recipe_id))
         connection.commit()
         return jsonify({"message": "Item added to kitchen stock successfully!"}), 200
     except mysql.connector.Error as err:
@@ -390,7 +391,7 @@ def get_kitchen_stock():
     try:
         connection = get_connection()
         cursor = connection.cursor(dictionary=True) # Return rows as dictionaries
-        sql = "SELECT kitchenStockListID, itemName, amount FROM kitchenstocklist WHERE userID = %s"
+        sql = "SELECT kitchenStockListID, itemName, amount, recipeID FROM kitchenstocklist WHERE userID = %s"
         cursor.execute(sql, (user_id,))
         kitchen_stock_items = cursor.fetchall()
         return jsonify({"kitchen_stock": kitchen_stock_items}), 200
@@ -455,14 +456,15 @@ def process_grocery_list():
         for item in all_items:
             item_name = item.get("ingredient")
             item_amount = item.get("amount")
+            item_recipe_id = item.get("recipeID") # Get recipeID
 
             if item_name in ticked_items:
                 # If ticked, remove from grocerylistitems and add to kitchenstocklist
                 delete_sql = "DELETE FROM grocerylistitems WHERE userID = %s AND itemName = %s"
                 cursor.execute(delete_sql, (user_id, item_name))
 
-                insert_kitchen_sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
-                cursor.execute(insert_kitchen_sql, (user_id, item_name, item_amount))
+                insert_kitchen_sql = "INSERT INTO kitchenstocklist (userID, itemName, amount, recipeID) VALUES (%s, %s, %s, %s)"
+                cursor.execute(insert_kitchen_sql, (user_id, item_name, item_amount, item_recipe_id))
             # Unticked items remain in grocerylistitems, no action needed here
         
         connection.commit()

@@ -74,7 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
             instructions: modalRecipeInstructions.value,
             date_of_meal: modalDateOfMeal.value,
             image: modalRecipeImage.value,
-            ingredients: JSON.parse(modalRecipeIngredients.value), // Include ingredients
+            // ingredients: JSON.parse(modalRecipeIngredients.value), 
+            ingredients: modalRecipeIngredients.value,
         };
 
         try {
