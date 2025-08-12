@@ -224,21 +224,64 @@ def save_recipe():
             cursor.execute(nutritional_sql, (recipe_id, calories, protein, fat, carbs))
             connection.commit()
 
-        # Extract and save ingredients
+        # Extract and save ingredients with parsed amounts and units
         ingredients_list = data.get('ingredients', [])
         if ingredients_list and isinstance(ingredients_list, list):
-            ingredient_sql = "INSERT INTO recipeingredients (recipeID, ingredient, amount) VALUES (%s, %s, %s)"
+            ingredient_sql = "INSERT INTO recipeingredients (recipeID, ingredient, amount, unit, userID) VALUES (%s, %s, %s, %s, %s)"
             for item in ingredients_list:
-                ingredient_name = item
+                ingredient_name = item.strip()
                 amount = None
-                # Simple parsing for "amount ingredient" format
-                match = re.match(r'(\d+\.?\d*\s*(?:[a-zA-Z]+\.?\s*)?)(.*)', item.strip())
+                unit = None
+
+                # Attempt to parse "amount unit ingredient" or "amount ingredient"
+                # Example: "1.5 kg flour", "2 cups sugar", "3 eggs"
+                match = re.match(r'(\d+\.?\d*)\s*([a-zA-Z]+)?\s*(.*)', ingredient_name)
                 if match:
-                    amount = match.group(1).strip()
-                    ingredient_name = match.group(2).strip()
+                    numeric_part = float(match.group(1))
+                    unit_part = match.group(2)
+                    remaining_part = match.group(3).strip()
+
+                    # Standardize units
+                    if unit_part:
+                        unit_part = unit_part.lower()
+                        if unit_part in ["kg", "kilogram", "kilograms"]:
+                            unit = "kg"
+                        elif unit_part in ["g", "gram", "grams"]:
+                            unit = "g"
+                        elif unit_part in ["ml", "milliliter", "milliliters"]:
+                            unit = "ml"
+                        elif unit_part in ["l", "liter", "liters"]:
+                            unit = "l"
+                        elif unit_part in ["cup", "cups"]:
+                            unit = "cup"
+                        elif unit_part in ["tbsp", "tablespoon", "tablespoons"]:
+                            unit = "tbsp"
+                        elif unit_part in ["tsp", "teaspoon", "teaspoons"]:
+                            unit = "tsp"
+                        elif unit_part in ["pc", "pcs", "piece", "pieces"]:
+                            unit = "pc"
+                        else:
+                            # If unit is not recognized, treat the whole numeric part + unit as part of the ingredient name
+                            remaining_part = f"{numeric_part} {unit_part} {remaining_part}".strip()
+                            numeric_part = None
+                            unit = None
+                    
+                    if numeric_part is not None:
+                        amount = numeric_part
+                        ingredient_name = remaining_part
+                    else:
+                        # If no numeric part or unit, or unit not recognized, keep original item as ingredient name
+                        ingredient_name = item.strip()
+                        amount = None
+                        unit = None
+                else:
+                    # If no match, keep original item as ingredient name
+                    ingredient_name = item.strip()
+                    amount = None
+                    unit = None
                 
                 try:
-                    cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount))
+                    cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount, unit, user_id))
                 except mysql.connector.Error as err:
                     print(f"MySQL Error inserting ingredient: {err}")
             connection.commit()
@@ -274,89 +317,34 @@ def generate_grocery_list():
         connection = get_connection()
         cursor = connection.cursor()
 
-        # Get date range (e.g., next 7 days from today)
-        start_date_str = request.args.get("start_date", datetime.date.today().isoformat())
-        end_date_str = request.args.get("end_date", (datetime.date.today() + datetime.timedelta(days=6)).isoformat())
+        today = datetime.date.today()
 
-        start_date = datetime.date.fromisoformat(start_date_str)
-        end_date = datetime.date.fromisoformat(end_date_str)
-
-        # Fetch ingredients for recipes within the date range for the user
+        # Fetch ingredients for recipes for today's date for the user
         query = """
-            SELECT ri.ingredient, ri.amount
+            SELECT ri.ingredient, ri.amount, ri.unit
             FROM recipeingredients ri
             JOIN recipe r ON ri.recipeID = r.recipeID
-            WHERE r.userID = %s AND r.date_of_meal BETWEEN %s AND %s
+            WHERE r.userID = %s AND r.date_of_meal = %s
         """
-        cursor.execute(query, (user_id, start_date, end_date))
-        raw_ingredients = cursor.fetchall()
+        cursor.execute(query, (user_id, today))
+        ingredients_from_db = cursor.fetchall()
 
-        # Aggregate ingredients
-        aggregated_ingredients = defaultdict(lambda: {"amounts": [], "total_numeric_amount": 0, "unit": None})
-
-        for ingredient, amount_str in raw_ingredients:
-            amount_str = amount_str.strip() if amount_str else ""
-            match = re.match(r"(\d+\.?\d*)\s*([a-zA-Z]+)?", amount_str) # Matches "1.5 kg" or "2 cups"
-
-            if match:
-                numeric_part = float(match.group(1))
-                unit_part = match.group(2).lower() if match.group(2) else ""
-
-                # Try to standardize common units
-                if unit_part in ["kg", "kilogram", "kilograms"]:
-                    unit_part = "kg"
-                elif unit_part in ["g", "gram", "grams"]:
-                    unit_part = "g"
-                elif unit_part in ["ml", "milliliter", "milliliters"]:
-                    unit_part = "ml"
-                elif unit_part in ["l", "liter", "liters"]:
-                    unit_part = "l"
-                elif unit_part in ["cup", "cups"]:
-                    unit_part = "cup"
-                elif unit_part in ["tbsp", "tablespoon", "tablespoons"]:
-                    unit_part = "tbsp"
-                elif unit_part in ["tsp", "teaspoon", "teaspoons"]:
-                    unit_part = "tsp"
-                elif unit_part in ["pc", "pcs", "piece", "pieces"]:
-                    unit_part = "pc" # For pieces/units
-                else:
-                    unit_part = "" # Unknown or no unit
-
-                if aggregated_ingredients[ingredient]["unit"] is None:
-                    aggregated_ingredients[ingredient]["unit"] = unit_part
-                
-                # If units are consistent, sum the numeric part
-                if aggregated_ingredients[ingredient]["unit"] == unit_part:
-                    aggregated_ingredients[ingredient]["total_numeric_amount"] += numeric_part
-                else:
-                    # If units are inconsistent, just add to amounts list
-                    aggregated_ingredients[ingredient]["amounts"].append(amount_str)
-            else:
-                # If no numeric part or unit, just add the raw amount string
-                aggregated_ingredients[ingredient]["amounts"].append(amount_str)
-
-        # Format the output
         grocery_list = []
-        for ingredient, data in aggregated_ingredients.items():
-            if data["total_numeric_amount"] > 0 and data["unit"]:
-                grocery_list.append({
-                    "ingredient": ingredient,
-                    "amount": f"{data['total_numeric_amount']} {data['unit']}".strip()
-                })
-            elif data["amounts"]:
-                # If there are raw amounts (due to inconsistent units or no numeric part)
-                # Join them, or just take the first one if only one exists
-                amount_display = ", ".join(data["amounts"]) if len(data["amounts"]) > 1 else data["amounts"][0]
-                grocery_list.append({
-                    "ingredient": ingredient,
-                    "amount": amount_display
-                })
+        for ingredient, amount, unit in ingredients_from_db:
+            amount_display = ""
+            if amount is not None and unit is not None:
+                amount_display = f"{amount} {unit}".strip()
+            elif amount is not None:
+                amount_display = str(amount)
+            elif unit is not None:
+                amount_display = str(unit)
             else:
-                # For ingredients with no amount specified
-                grocery_list.append({
-                    "ingredient": ingredient,
-                    "amount": "N/A"
-                })
+                amount_display = "N/A"
+            
+            grocery_list.append({
+                "ingredient": ingredient,
+                "amount": amount_display
+            })
 
         return jsonify({"grocery_list": grocery_list}), 200
 
