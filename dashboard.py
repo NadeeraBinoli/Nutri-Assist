@@ -262,27 +262,51 @@ def get_saved_meals():
     cursor = conn.cursor()
     
     try:
-        query = "SELECT recipeID, name, instructions, category, date_of_meal, image_url FROM recipe WHERE userID = %s ORDER BY date_of_meal, category"
+        query = """
+            SELECT 
+                r.recipeID, r.name, r.instructions, r.category, r.date_of_meal, r.image_url,
+                ni.calories, ni.protein, ni.fats, ni.carbs
+            FROM recipe r
+            LEFT JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
+            WHERE r.userID = %s 
+            ORDER BY r.date_of_meal, r.category
+        """
         cursor.execute(query, (user_id,))
         saved_meals_raw = cursor.fetchall()
 
         meals_by_date = {}
         for meal in saved_meals_raw:
-            recipe_id, name, instructions, category, date_of_meal, image_url = meal
+            recipe_id, name, instructions, category, date_of_meal, image_url, calories, protein, fats, carbs = meal
             date_str = date_of_meal.strftime('%Y-%m-%d') # Format date to YYYY-MM-DD
 
             if date_str not in meals_by_date:
-                meals_by_date[date_str] = {}
-            if category not in meals_by_date[date_str]:
-                meals_by_date[date_str][category] = []
+                meals_by_date[date_str] = {
+                    'meals': {},
+                    'total_calories': 0,
+                    'total_protein': 0,
+                    'total_fats': 0,
+                    'total_carbs': 0
+                }
+            if category not in meals_by_date[date_str]['meals']:
+                meals_by_date[date_str]['meals'][category] = []
             
-            meals_by_date[date_str][category].append({
+            meals_by_date[date_str]['meals'][category].append({
                 'id': recipe_id,
                 'name': name,
                 'instructions': instructions,
                 'category': category,
-                'image_url': image_url
+                'image_url': image_url,
+                'calories': calories if calories is not None else 0,
+                'protein': protein if protein is not None else 0,
+                'fats': fats if fats is not None else 0,
+                'carbs': carbs if carbs is not None else 0
             })
+            
+            # Accumulate totals for the day
+            meals_by_date[date_str]['total_calories'] += (calories if calories is not None else 0)
+            meals_by_date[date_str]['total_protein'] += (protein if protein is not None else 0)
+            meals_by_date[date_str]['total_fats'] += (fats if fats is not None else 0)
+            meals_by_date[date_str]['total_carbs'] += (carbs if carbs is not None else 0)
         
         return jsonify(meals_by_date), 200
 

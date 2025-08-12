@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mealDayDiv.innerHTML = `
                 <div class="date-info">
                     <h3>${date.toLocaleDateString("en-US", { month: "short", day: "2-digit", weekday: "long" })}</h3>
-                    <p>${dayName} <span class="dailyCalorie">${healthProfile.consumed_calories !== undefined ? healthProfile.consumed_calories : '0'} kcl </span> <i class="fa-solid fa-fire"></i></p>
+                    <p>${dayName} <span class="dailyCalorie">0 kcl </span> <i class="fa-solid fa-fire"></i></p>
                 </div>
                 <div class="meal-options" id="meals-${dateStr}">
                     <div class="meal-item" data-category="Breakfast">
@@ -148,16 +148,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const mealsByDate = await response.json();
 
         for (const dateStr in mealsByDate) {
-            populateDay(mealsByDate[dateStr], `meals-${dateStr}`);
+            populateDay(mealsByDate[dateStr], dateStr);
         }
     };
 
-    const populateDay = (meals, containerId) => {
-        if (!meals) return;
+    const populateDay = (dayData, dateStr) => {
+        if (!dayData || !dayData.meals) return;
 
-        for (const category in meals) {
-            const mealItems = meals[category];
-            const container = document.querySelector(`#${containerId} [data-category="${category}"]`);
+        // Update daily calorie display
+        const dailyCalorieSpan = document.querySelector(`#meal-day-${dateStr} .dailyCalorie`);
+        if (dailyCalorieSpan) {
+            dailyCalorieSpan.textContent = `${dayData.total_calories.toFixed(0)} kcl`;
+        }
+
+        for (const category in dayData.meals) {
+            const mealItems = dayData.meals[category];
+            const container = document.querySelector(`#meals-${dateStr} [data-category="${category}"]`);
 
             if (container && mealItems.length > 0) {
                 const addButton = container.querySelector('.add-more-btn');
@@ -171,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             <div class="mealDetail">
                                 <h4 class="mealName">${meal.name}</h4>
                                 <p class="mealSize">1 Serving</p>
+                                <p class="mealCalories">${meal.calories.toFixed(0)} kcl</p>
                             </div>
                             <i class="fa-solid fa-trash delete-meal-btn" data-recipe-id="${meal.id}"></i>
                         `;
