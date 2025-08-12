@@ -361,5 +361,97 @@ def generate_grocery_list():
             connection.close()
 
 
+@app.route("/api/kitchen_stock", methods=["POST"])
+def add_kitchen_stock():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized. Please log in to add kitchen stock."}), 401
+
+    user_id = session["user_id"]
+    data = request.json
+    item_name = data.get("itemName")
+    amount = data.get("amount")
+
+    if not item_name:
+        return jsonify({"error": "Item name is required."}), 400
+
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
+        cursor.execute(sql, (user_id, item_name, amount))
+        connection.commit()
+        return jsonify({"message": "Item added to kitchen stock successfully!"}), 200
+    except mysql.connector.Error as err:
+        print(f"MySQL Error adding kitchen stock: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route("/api/kitchen_stock", methods=["GET"])
+def get_kitchen_stock():
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized. Please log in to view kitchen stock."}), 401
+
+    user_id = session["user_id"]
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True) # Return rows as dictionaries
+        sql = "SELECT kitchenStockListID, itemName, amount FROM kitchenstocklist WHERE userID = %s"
+        cursor.execute(sql, (user_id,))
+        kitchen_stock_items = cursor.fetchall()
+        return jsonify({"kitchen_stock": kitchen_stock_items}), 200
+    except mysql.connector.Error as err:
+        print(f"MySQL Error fetching kitchen stock: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route("/api/kitchen_stock/<int:item_id>", methods=["DELETE"])
+def delete_kitchen_stock(item_id):
+    if "user_id" not in session:
+        return jsonify({"error": "Unauthorized. Please log in to delete kitchen stock."}), 401
+
+    user_id = session["user_id"]
+    connection = None
+    cursor = None
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        sql = "DELETE FROM kitchenstocklist WHERE kitchenStockListID = %s AND userID = %s"
+        cursor.execute(sql, (item_id, user_id))
+        connection.commit()
+        if cursor.rowcount > 0:
+            return jsonify({"message": "Item deleted from kitchen stock successfully!"}), 200
+        else:
+            return jsonify({"error": "Item not found or you don't have permission to delete it."}), 404
+    except mysql.connector.Error as err:
+        print(f"MySQL Error deleting kitchen stock: {err}")
+        return jsonify({"error": "Database error, please try again later."}), 500
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+        return jsonify({"error": "An unexpected error occurred."}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
 if __name__ == "__main__":
     app.run(debug=True)
