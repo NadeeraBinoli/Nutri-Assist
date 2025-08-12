@@ -31,7 +31,7 @@ main {
 
 .category h3 {
   margin: 10px 0;
-  color: #ccc;
+  color: var(--panache-white);
 }
 
 .item {
@@ -84,7 +84,7 @@ main {
 }
 
 .modal-content {
-    background-color: #2a2a2a;
+    background-color: var(--dark-black);
     margin: 5% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
@@ -116,7 +116,7 @@ main {
 .form-group label {
     display: block;
     margin-bottom: 5px;
-    color: #6fbf4b;
+    color: var(--mantis-light-green);
 }
 
 .form-group input[type="text"] {
@@ -124,13 +124,13 @@ main {
     padding: 10px;
     border: 1px solid #555;
     border-radius: 5px;
-    background-color: #333;
-    color: #eee;
+    background-color: var(--dark-black);
+    color: var(--panache-white);
 }
 
 .btn-submit {
-    background-color: #6fbf4b;
-    color: white;
+    background-color:var(--mantis-light-green);
+    color: var(--crusoe-dark-green);
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -139,7 +139,8 @@ main {
 }
 
 .btn-submit:hover {
-    background-color: #5aa340;
+    background-color: var(--crusoe-dark-green);
+    color: var(--mantis-light-green);
 }
 
 .add-btn {
@@ -163,7 +164,7 @@ main {
 .kitchen-stock-item {
     display: flex;
     align-items: center;
-    background: #222;
+    background: var(--dark-black);
     padding: 8px;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -177,12 +178,12 @@ main {
 }
 
 .kitchen-stock-item .item-info .name {
-    color: #6fbf4b;
+    color: var(--mantis-light-green);
     margin-right: 10px;
 }
 
 .kitchen-stock-item .item-info .qty {
-    color: #ccc;
+    color: var(--panache-white);
 }
 
 .kitchen-stock-item .actions button {

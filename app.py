@@ -228,10 +228,13 @@ def save_recipe():
         ingredients_list = data.get('ingredients', [])
         if ingredients_list and isinstance(ingredients_list, list):
             ingredient_sql = "INSERT INTO recipeingredients (recipeID, ingredient, amount, unit, userID) VALUES (%s, %s, %s, %s, %s)"
+            grocery_list_sql = "INSERT INTO grocerylistitems (userID, itemName, amount) VALUES (%s, %s, %s)"
+
             for item in ingredients_list:
                 ingredient_name = item.strip()
                 amount = None
                 unit = None
+                amount_display = "N/A"
 
                 # Attempt to parse "amount unit ingredient" or "amount ingredient"
                 # Example: "1.5 kg flour", "2 cups sugar", "3 eggs"
@@ -269,21 +272,26 @@ def save_recipe():
                     if numeric_part is not None:
                         amount = numeric_part
                         ingredient_name = remaining_part
+                        amount_display = f"{amount} {unit or ''}".strip()
                     else:
                         # If no numeric part or unit, or unit not recognized, keep original item as ingredient name
                         ingredient_name = item.strip()
                         amount = None
                         unit = None
+                        amount_display = "N/A"
                 else:
                     # If no match, keep original item as ingredient name
                     ingredient_name = item.strip()
                     amount = None
                     unit = None
+                    amount_display = "N/A"
                 
                 try:
                     cursor.execute(ingredient_sql, (recipe_id, ingredient_name, amount, unit, user_id))
+                    # Also insert into grocerylistitems
+                    cursor.execute(grocery_list_sql, (user_id, ingredient_name, amount_display))
                 except mysql.connector.Error as err:
-                    print(f"MySQL Error inserting ingredient: {err}")
+                    print(f"MySQL Error inserting ingredient or grocery item: {err}")
             connection.commit()
 
         return jsonify({"message": "Recipe saved successfully!"}), 200
@@ -315,36 +323,12 @@ def generate_grocery_list():
     cursor = None
     try:
         connection = get_connection()
-        cursor = connection.cursor()
+        cursor = connection.cursor(dictionary=True)
 
-        today = datetime.date.today()
-
-        # Fetch ingredients for recipes for today's date for the user
-        query = """
-            SELECT ri.ingredient, ri.amount, ri.unit
-            FROM recipeingredients ri
-            JOIN recipe r ON ri.recipeID = r.recipeID
-            WHERE r.userID = %s AND r.date_of_meal = %s
-        """
-        cursor.execute(query, (user_id, today))
-        ingredients_from_db = cursor.fetchall()
-
-        grocery_list = []
-        for ingredient, amount, unit in ingredients_from_db:
-            amount_display = ""
-            if amount is not None and unit is not None:
-                amount_display = f"{amount} {unit}".strip()
-            elif amount is not None:
-                amount_display = str(amount)
-            elif unit is not None:
-                amount_display = str(unit)
-            else:
-                amount_display = "N/A"
-            
-            grocery_list.append({
-                "ingredient": ingredient,
-                "amount": amount_display
-            })
+        # Fetch items directly from grocerylistitems table
+        query = "SELECT itemName AS ingredient, amount FROM grocerylistitems WHERE userID = %s"
+        cursor.execute(query, (user_id,))
+        grocery_list = cursor.fetchall()
 
         return jsonify({"grocery_list": grocery_list}), 200
 
@@ -468,22 +452,18 @@ def process_grocery_list():
         connection = get_connection()
         cursor = connection.cursor()
 
-        # 1. Clear existing grocerylistitems for the user
-        cursor.execute("DELETE FROM grocerylistitems WHERE userID = %s", (user_id,))
-
-        # 2. Process items
         for item in all_items:
             item_name = item.get("ingredient")
             item_amount = item.get("amount")
 
             if item_name in ticked_items:
-                # Move to kitchen stock
-                sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
-                cursor.execute(sql, (user_id, item_name, item_amount))
-            else:
-                # Move to grocery list items (if not ticked)
-                sql = "INSERT INTO grocerylistitems (userID, itemName, amount) VALUES (%s, %s, %s)"
-                cursor.execute(sql, (user_id, item_name, item_amount))
+                # If ticked, remove from grocerylistitems and add to kitchenstocklist
+                delete_sql = "DELETE FROM grocerylistitems WHERE userID = %s AND itemName = %s"
+                cursor.execute(delete_sql, (user_id, item_name))
+
+                insert_kitchen_sql = "INSERT INTO kitchenstocklist (userID, itemName, amount) VALUES (%s, %s, %s)"
+                cursor.execute(insert_kitchen_sql, (user_id, item_name, item_amount))
+            # Unticked items remain in grocerylistitems, no action needed here
         
         connection.commit()
         return jsonify({"message": "Grocery list processed successfully!"}), 200
