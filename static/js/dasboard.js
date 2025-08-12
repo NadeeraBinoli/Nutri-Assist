@@ -219,6 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
             openModal(e);
         }
     });
+
+    // Event listener for the Generate button
+    const generateBtn = document.querySelector('.generate-btn');
+    if (generateBtn) {
+        generateBtn.addEventListener('click', () => {
+            window.location.href = groceryUrl;
+        });
+    }
 });
 
 
