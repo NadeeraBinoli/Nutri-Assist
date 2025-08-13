@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+        <title>Nutri-Assist</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/dark-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="../static/css/home.css">
     <!-- font awesome link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -21,7 +22,7 @@
         </div>
         <ul class="nav-links">
             <li><a href="{{ url_for('home') }}">Home</a></li>
-            <li><a href="#">Support</a></li>
+            <li><a href="{{ url_for('static', filename='documents/userguide.pdf') }}" target="_blank">Support</a></li>
             <li><a href="{{ url_for('account') }}">My Account</a></li>
             <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
             <a href="{{ url_for('signup_page') }}" class="btn secondary-btn">Sign Up</a>
@@ -35,7 +36,7 @@
             <h1>Your Personalized Meal Planning Dashboard Awaits</h1>
             <p>Stay on top of your health with our intuitive dashboard. Track your daily calorie intake, monitor your meals, and access essential features with ease.</p>
             <div class="hero-buttons">
-                <a href="#" class="btn primary-btn">Log Meal</a>
+                <a href="{{ url_for('dashboard') }}" class="btn primary-btn">Log Meal</a>
                 <a href="#" class="btn secondary-btn">Learn More</a>
             </div>
         </div>

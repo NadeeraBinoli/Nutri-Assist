@@ -7,6 +7,7 @@ from dashboard import dashboard_bp, _get_health_profile_data
 from recipe import load_parsed_recipes
 from fuzzywuzzy import fuzz
 from database import get_connection 
+from recipe import load_parsed_recipes, get_user_allergies, check_allergens
 
 app = Flask(__name__)
 app.secret_key = "1e9ac1d030f2c0b496c6dd6aeb30424b"
@@ -79,17 +80,26 @@ def recipe():
 def api_recipes():
     try:
         search_query = request.args.get('search', '').lower()
+        user_allergies = []
+        
+        # Get user allergies if logged in
+        if "user_id" in session:
+            user_allergies = get_user_allergies(session["user_id"])
+        
         if search_query:
             filtered_recipes = []
             best_match_title = None
             highest_score = 0
 
             for r in recipes:
+                # Check for allergens in the recipe
+                recipe_with_allergens = check_allergens(r.copy(), user_allergies)
+                
                 title_score = fuzz.partial_ratio(search_query, r['title'].lower())
                 ingredients_score = max([fuzz.partial_ratio(search_query, i.lower()) for i in r['ingredients']]) if r['ingredients'] else 0
                 
                 if title_score > 70 or ingredients_score > 70:
-                    filtered_recipes.append(r)
+                    filtered_recipes.append(recipe_with_allergens)
                 
                 current_best_score = max(title_score, ingredients_score)
                 if current_best_score > highest_score:
@@ -101,7 +111,10 @@ def api_recipes():
                 response_data['suggestion'] = best_match_title
             
             return jsonify(response_data)
-        return jsonify({'recipes': recipes})
+        
+        # Return all recipes with allergen info when no search query
+        recipes_with_allergens = [check_allergens(r.copy(), user_allergies) for r in recipes]
+        return jsonify({'recipes': recipes_with_allergens})
     except Exception as e:
         print(f"Error in /api/recipes: {e}")
         return jsonify({'error': 'Internal Server Error'}), 500

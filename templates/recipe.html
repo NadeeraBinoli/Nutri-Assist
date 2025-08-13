@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+        <title>Nutri-Assist</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/dark-logo.png') }}" type="image/png">
     <link rel="stylesheet" href="../static/css/recipe.css">
     <!-- font awesome link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
@@ -39,7 +40,7 @@
         <nav class="navbar">
             <ul class="nav-links">
                 <li><a href="{{ url_for('home') }}">Home</a></li>
-                <li><a href="#">Support</a></li>
+                <li><a href="{{ url_for('static', filename='documents/userguide.pdf') }}" target="_blank">Support</a></li>
                 <li><a href="{{ url_for('account') }}">My Account</a></li>
                 <li><a href="#"><i id="dark-mode-toggle" class="fa-solid fa-sun"></i></a></li>
             </ul>

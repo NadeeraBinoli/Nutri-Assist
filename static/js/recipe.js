@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalRecipeInstructions = document.getElementById('modalRecipeInstructions');
     const modalDateOfMeal = document.getElementById('modalDateOfMeal');
     const modalRecipeImage = document.getElementById('modalRecipeImage');
+    const modalRecipeIngredients = document.getElementById('modalRecipeIngredients');
 
     // Open modal
     recipeGrid.addEventListener('click', (event) => {
@@ -22,8 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const button = event.target.closest('.save-recipe-btn');
             modalRecipeTitle.value = button.dataset.title;
             modalRecipeInstructions.value = button.dataset.instructions;
-            modalRecipeImage.value = button.dataset.image; // Set the hidden image input
-            modalRecipeIngredients.value = button.dataset.ingredients; // Set the hidden ingredients input
+            modalRecipeImage.value = button.dataset.image;
+            modalRecipeIngredients.value = button.dataset.ingredients;
+
+            // Check if recipe has allergens and show warning
+            if (button.dataset.containsAllergens === 'true') {
+                const confirmSave = confirm('Warning: This recipe contains allergens you specified. Are you sure you want to save it?');
+                if (!confirmSave) {
+                    return;
+                }
+            }
 
             // Set min and max dates for date_of_meal input
             const today = new Date();
@@ -32,14 +41,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const formatDate = (date) => {
                 const yyyy = date.getFullYear();
-                const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+                const mm = String(date.getMonth() + 1).padStart(2, '0');
                 const dd = String(date.getDate()).padStart(2, '0');
                 return `${yyyy}-${mm}-${dd}`;
             };
 
             modalDateOfMeal.min = formatDate(today);
             modalDateOfMeal.max = formatDate(oneWeekLater);
-            modalDateOfMeal.value = formatDate(today); // Optionally pre-fill with today's date
+            modalDateOfMeal.value = formatDate(today);
 
             // Set the category dropdown
             const categoryValue = button.dataset.category;
@@ -74,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
             instructions: modalRecipeInstructions.value,
             date_of_meal: modalDateOfMeal.value,
             image: modalRecipeImage.value,
-            // ingredients: JSON.parse(modalRecipeIngredients.value), 
             ingredients: modalRecipeIngredients.value,
         };
 
@@ -114,6 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 recipes.forEach(recipe => {
                     const recipeCard = document.createElement('div');
                     recipeCard.classList.add('recipe-card');
+                    
+                    // Add allergy warning class if recipe contains allergens
+                    if (recipe.contains_allergens) {
+                        recipeCard.classList.add('allergy-warning');
+                    }
 
                     recipeCard.innerHTML = `
                         <img src="${recipe.image || '../static/images/placeholder.jpg'}" alt="${recipe.title}" class="recipe-image">
@@ -123,7 +136,19 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p><strong>Total Time:</strong> ${recipe.total_time}</p>
                             <p><strong>Calories:</strong> ${recipe.calories}</p>
                         </div>
-                        <button class="save-recipe-btn" data-title="${recipe.title}" data-instructions="${recipe.instructions.join('\n')}" data-category="${recipe.category}" data-image="${recipe.image}" data-ingredients="${JSON.stringify(recipe.ingredients)}">
+                        ${recipe.contains_allergens ? 
+                            `<div class="allergy-alert">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                ${recipe.allergen_warnings.join(', ')}
+                            </div>` : ''
+                        }
+                        <button class="save-recipe-btn" 
+                                data-title="${recipe.title}" 
+                                data-instructions="${recipe.instructions.join('\n')}" 
+                                data-category="${recipe.category}" 
+                                data-image="${recipe.image}" 
+                                data-ingredients="${JSON.stringify(recipe.ingredients)}"
+                                data-contains-allergens="${recipe.contains_allergens}">
                             <i class="fa-solid fa-bookmark"></i> Save Recipe
                         </button>
                     `;
