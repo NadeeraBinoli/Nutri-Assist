@@ -1,18 +1,26 @@
-
-
-
 document.addEventListener("DOMContentLoaded", function () {
     getHealthProfile();
 
     const calculateBtn = document.querySelector(".calculate-btn");
-    if(calculateBtn) {
+    if (calculateBtn) {
         calculateBtn.addEventListener("click", calculateAndSaveHealthMetrics);
+    }
+
+    const plusIcon = document.querySelector(".fa-circle-plus");
+    const minusIcon = document.querySelector(".fa-circle-minus");
+
+    if (plusIcon) {
+        plusIcon.addEventListener("click", () => logWaterIntake(0.5)); // Add 500ml
+    }
+
+    if (minusIcon) {
+        minusIcon.addEventListener("click", () => logWaterIntake(-0.5)); // Remove 500ml
     }
 });
 
 function changeAge(amount) {
     const ageInput = document.getElementById('age');
-    let currentAge = parseInt(ageInput.value);
+    let currentAge = parseInt(ageInput.value) || 0;
     currentAge += amount;
     if (currentAge >= 1) {
         ageInput.value = currentAge;
@@ -31,10 +39,8 @@ function calculateAndSaveHealthMetrics() {
         return;
     }
 
-    // Calculate BMI
     const bmi = weight / ((height / 100) ** 2);
 
-    // Calculate BMR (Basal Metabolic Rate)
     let bmr;
     if (gender === 'male') {
         bmr = 10 * weight + 6.25 * height - 5 * age + 5;
@@ -42,7 +48,6 @@ function calculateAndSaveHealthMetrics() {
         bmr = 10 * weight + 6.25 * height - 5 * age - 161;
     }
 
-    // Calculate TDEE (Total Daily Energy Expenditure)
     let activityMultiplier;
     switch (activity) {
         case 'sedentary': activityMultiplier = 1.2; break;
@@ -53,13 +58,11 @@ function calculateAndSaveHealthMetrics() {
     }
     const calories = Math.round(bmr * activityMultiplier);
 
-    // Calculate Macronutrients
     const carbs = Math.round((calories * 0.4) / 4);
     const fats = Math.round((calories * 0.3) / 9);
     const proteins = Math.round((calories * 0.3) / 4);
 
-    // Calculate Water Intake
-    let waterTarget = weight * 0.033; // 33ml per kg
+    let waterTarget = weight * 0.033;
     if (gender === "male") waterTarget += 0.5;
     switch (activity) {
         case "light": waterTarget += 0.2; break;
@@ -82,7 +85,6 @@ function calculateAndSaveHealthMetrics() {
         water_target: waterTarget.toFixed(1)
     };
 
-    // Save data to backend and update UI
     fetch('/dashboard/update_health_metrics', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +102,6 @@ function calculateAndSaveHealthMetrics() {
 }
 
 function updateHealthUI(data) {
-    // BMI Display
     document.getElementById("bmi-result").textContent = data.bmi;
     const bmiStatus = document.getElementById("bmi-status");
     if (data.bmi < 18.5) {
@@ -118,41 +119,47 @@ function updateHealthUI(data) {
     }
     document.getElementById("bmi-slider").value = data.bmi;
 
-    // Nutrition Targets
     document.getElementById('nutrition-calories').textContent = `${data.calorieIntakeLimit} Calories`;
     document.getElementById('nutrition-carbs').textContent = `${data.carbs_g}g Carbs`;
     document.getElementById('nutrition-fats').textContent = `${data.fats_g}g Fats`;
     document.getElementById('nutrition-proteins').textContent = `${data.proteins_g}g Proteins`;
 
-    // Water Intake
     document.querySelector(".waterTarget").textContent = `${data.water_target}L`;
-    // Note: Water drinking progress is handled separately to not reset it on every calculation.
 }
 
 function getHealthProfile() {
     fetch('/dashboard/get_health_profile')
         .then(response => {
             if (!response.ok) {
-                throw new Error('No health profile found');
+                throw new Error('Failed to fetch profile');
             }
             return response.json();
         })
         .then(data => {
-            if (data) {
-                document.getElementById('height').value = data.height;
-                document.getElementById('weight').value = data.weight;
-                document.getElementById('age').value = data.age;
-                document.getElementById('gender').value = data.gender;
-                document.getElementById('activity').value = data.activity;
+            if (data.has_profile) {
+                document.getElementById('height').value = data.height || '';
+                document.getElementById('weight').value = data.weight || '';
+                document.getElementById('age').value = data.age || '';
+                document.getElementById('gender').value = data.gender || 'female';
+                document.getElementById('activity').value = data.activity || 'sedentary';
                 updateHealthUI(data);
-                // Initialize water tracker with DB data
+
                 const waterTargetEl = document.querySelector(".waterTarget");
-                if(waterTargetEl) waterTargetEl.textContent = `${data.water_target || '2.5'}L`;
+                if (waterTargetEl) waterTargetEl.textContent = `${data.water_target || '2.5'}L`;
                 updateWaterTracker(data.drank_amount || 0);
+            } else {
+                console.log(data.message || 'No profile found.');
+                document.getElementById('height').value = '';
+                document.getElementById('weight').value = '';
+                document.getElementById('age').value = '';
+                document.getElementById('gender').value = 'female';
+                document.getElementById('activity').value = 'sedentary';
+                document.querySelector(".waterTarget").textContent = '2.5L';
+                updateWaterTracker(0);
             }
         })
         .catch(error => {
-            console.log(error.message);
+            console.error("Error fetching profile:", error.message);
         });
 }
 
@@ -173,20 +180,6 @@ function logWaterIntake(amount) {
     .catch(error => console.error("Error:", error));
 }
 
-// This part handles the water drinking log, keeping it separate from the profile calculation
-document.addEventListener("DOMContentLoaded", function () {
-    const plusIcon = document.querySelector(".fa-circle-plus");
-    const minusIcon = document.querySelector(".fa-circle-minus");
-
-    if(plusIcon) {
-        plusIcon.addEventListener("click", () => logWaterIntake(0.5)); // Add 500ml
-    }
-
-    if(minusIcon){
-        minusIcon.addEventListener("click", () => logWaterIntake(-0.5)); // Remove 500ml
-    }
-});
-
 function updateWaterTracker(drinkedWater) {
     const drinkedWaterEl = document.querySelector(".drinkedWater");
     const waterTargetEl = document.querySelector(".waterTarget");
@@ -194,8 +187,7 @@ function updateWaterTracker(drinkedWater) {
 
     let waterTarget = parseFloat(waterTargetEl.textContent) || 2.5;
     drinkedWaterEl.textContent = drinkedWater.toFixed(1) + "L";
-    
+
     const progressPercentage = (drinkedWater / waterTarget) * 100;
     waterIntakeBar.style.height = progressPercentage + "%";
 }
-

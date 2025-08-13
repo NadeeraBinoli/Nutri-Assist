@@ -150,9 +150,12 @@ def _get_health_profile_data(user_id):
 
     try:
         query = """
-            SELECT hp.weight, hp.height, hp.bmi, hp.calorieIntakeLimit, hp.carbs_g, hp.fats_g, hp.proteins_g, hp.age, hp.gender, hp.activity, wi.water_target, wi.drank_amount
+            SELECT hp.weight, hp.height, hp.bmi, hp.calorieIntakeLimit, 
+                   hp.carbs_g, hp.fats_g, hp.proteins_g, hp.age, hp.gender, hp.activity, 
+                   wi.water_target, wi.drank_amount
             FROM HealthProfile hp
-            LEFT JOIN water_intake wi ON hp.userID = wi.userId AND wi.date = CURDATE()
+            LEFT JOIN water_intake wi 
+                ON hp.userID = wi.userId AND wi.date = CURDATE()
             WHERE hp.userID = %s 
             ORDER BY hp.lastUpdated DESC 
             LIMIT 1
@@ -162,43 +165,51 @@ def _get_health_profile_data(user_id):
 
         # Calculate consumed calories for today
         today = datetime.date.today()
-        consumed_calories_query = """
+        cursor.execute("""
             SELECT SUM(ni.calories) AS total_calories
             FROM recipe r
             JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
             WHERE r.userID = %s AND r.date_of_meal = %s
-        """
-        cursor.execute(consumed_calories_query, (user_id, today))
-        consumed_calories_result = cursor.fetchone()
-        consumed_calories = consumed_calories_result['total_calories'] if consumed_calories_result and consumed_calories_result['total_calories'] is not None else 0
+        """, (user_id, today))
+        consumed_calories = cursor.fetchone()['total_calories'] or 0
 
-        # Calculate consumed protein, fats, and carbs for today
-        consumed_macros_query = """
-            SELECT SUM(ni.protein) AS total_protein, SUM(ni.fats) AS total_fats, SUM(ni.carbs) AS total_carbs
+        # Calculate macros for today
+        cursor.execute("""
+            SELECT SUM(ni.protein) AS total_protein, 
+                   SUM(ni.fats) AS total_fats, 
+                   SUM(ni.carbs) AS total_carbs
             FROM recipe r
             JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
             WHERE r.userID = %s AND r.date_of_meal = %s
-        """
-        cursor.execute(consumed_macros_query, (user_id, today))
-        consumed_macros_result = cursor.fetchone()
-
-        consumed_protein = consumed_macros_result['total_protein'] if consumed_macros_result and consumed_macros_result['total_protein'] is not None else 0
-        consumed_fats = consumed_macros_result['total_fats'] if consumed_macros_result and consumed_macros_result['total_fats'] is not None else 0
-        consumed_carbs = consumed_macros_result['total_carbs'] if consumed_macros_result and consumed_macros_result['total_carbs'] is not None else 0
+        """, (user_id, today))
+        macros = cursor.fetchone()
+        consumed_protein = macros['total_protein'] or 0
+        consumed_fats = macros['total_fats'] or 0
+        consumed_carbs = macros['total_carbs'] or 0
 
         if health_profile:
-            health_profile['consumed_calories'] = consumed_calories
-            health_profile['consumed_protein'] = consumed_protein
-            health_profile['consumed_fats'] = consumed_fats
-            health_profile['consumed_carbs'] = consumed_carbs
+            health_profile.update({
+                "has_profile": True,
+                "consumed_calories": consumed_calories,
+                "consumed_protein": consumed_protein,
+                "consumed_fats": consumed_fats,
+                "consumed_carbs": consumed_carbs
+            })
             return health_profile
         else:
-            return {'consumed_calories': consumed_calories, 'consumed_protein': consumed_protein, 'consumed_fats': consumed_fats, 'consumed_carbs': consumed_carbs}
+            # No profile found — tell frontend so it can prompt user
+            return {
+                "has_profile": False,
+                "message": "No health profile found. Please enter your details.",
+                "consumed_calories": consumed_calories,
+                "consumed_protein": consumed_protein,
+                "consumed_fats": consumed_fats,
+                "consumed_carbs": consumed_carbs
+            }
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        cursor.close()
+        conn.close()
+
 
 @dashboard_bp.route('/get_health_profile', methods=['GET'])
 def get_health_profile():
@@ -469,23 +480,49 @@ def copy_foods():
         connection = get_connection()
         cursor = connection.cursor()
 
-        # Fetch meals from the source date
-        fetch_query = "SELECT name, instructions, category, image_url FROM recipe WHERE userID = %s AND date_of_meal = %s AND category = %s"
+        # Fetch meals and nutritional info from source date
+        fetch_query = """
+            SELECT r.name, r.instructions, r.category, r.image_url,
+                   ni.calories, ni.protein, ni.fats, ni.carbs
+            FROM recipe r
+            LEFT JOIN nutritionalinfo ni ON r.recipeID = ni.recipeID
+            WHERE r.userID = %s AND r.date_of_meal = %s AND r.category = %s
+        """
         cursor.execute(fetch_query, (user_id, from_date, category))
-        meals_to_.copy = cursor.fetchall()
+        meals_to_copy = cursor.fetchall()
 
         if not meals_to_copy:
             return jsonify({'status': 'info', 'message': 'No meals found to copy.'}), 200
 
         # Insert meals into the destination date
-        insert_query = "INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url) VALUES (%s, %s, %s, %s, %s, %s)"
+        insert_recipe_query = """
+            INSERT INTO recipe (name, instructions, category, date_of_meal, userID, image_url)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        insert_nutrition_query = """
+            INSERT INTO nutritionalinfo (recipeID, calories, protein, fats, carbs)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+
         for meal in meals_to_copy:
-            name, instructions, category, image_url = meal
-            cursor.execute(insert_query, (name, instructions, category, to_date, user_id, image_url))
-        
+            name, instructions, category, image_url, calories, protein, fats, carbs = meal
+
+            # Insert into recipe table
+            cursor.execute(insert_recipe_query, (name, instructions, category, to_date, user_id, image_url))
+            new_recipe_id = cursor.lastrowid  # Get the inserted recipe's ID
+
+            # Insert into nutritionalinfo table
+            cursor.execute(insert_nutrition_query, (
+                new_recipe_id,
+                calories if calories is not None else 0,
+                protein if protein is not None else 0,
+                fats if fats is not None else 0,
+                carbs if carbs is not None else 0
+            ))
+
         connection.commit()
 
-        return jsonify({'status': 'success', 'message': f'Meals from {category} on {from_date} have been copied to {to_date}.'}), 200
+        return jsonify({'status': 'success', 'message': f'Meals from {category} on {from_date} copied to {to_date} with nutrition info.'}), 200
 
     except mysql.connector.Error as err:
         print(f"MySQL Error copying foods: {err}")

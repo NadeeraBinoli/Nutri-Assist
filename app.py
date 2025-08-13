@@ -308,11 +308,6 @@ def save_recipe():
         if connection:
             connection.close()
 
-
-import datetime
-from collections import defaultdict
-import re
-
 @app.route("/api/generate_grocery_list", methods=["GET"])
 def generate_grocery_list():
     if "user_id" not in session:
